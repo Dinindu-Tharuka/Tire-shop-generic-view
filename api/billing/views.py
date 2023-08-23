@@ -8,12 +8,28 @@ from .serializers import PaymentCashSerializer, PaymentChequeSerializer, Payment
 
 
 class BillListView(ListCreateAPIView):
-    queryset = Bill.objects.order_by('-date').all()
+    queryset = Bill.objects \
+                    .prefetch_related('bill_items') \
+                    .prefetch_related('bill_services') \
+                    .prefetch_related('bill_payments') \
+                    .prefetch_related('bill_payments__payments_cash') \
+                    .prefetch_related('bill_payments__payment_cheques') \
+                    .prefetch_related('bill_payments__payments_credit_card') \
+                    .prefetch_related('bill_payments__payments_credit') \
+                    .order_by('-date').all()
     serializer_class = BillSerializer    
 
 
 class BillDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = Bill.objects.order_by('-date').all()
+    queryset = Bill.objects \
+                    .prefetch_related('bill_items') \
+                    .prefetch_related('bill_services') \
+                    .prefetch_related('bill_payments') \
+                    .prefetch_related('bill_payments__payments_cash') \
+                    .prefetch_related('bill_payments__payment_cheques') \
+                    .prefetch_related('bill_payments__payments_credit_card') \
+                    .prefetch_related('bill_payments__payments_credit') \
+                    .order_by('-date').all()
     serializer_class = BillSerializer    
 
 
