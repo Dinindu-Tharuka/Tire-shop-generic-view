@@ -1,8 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.views import APIView
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
@@ -51,14 +49,12 @@ class BillPaymentDetailView(RetrieveUpdateDestroyAPIView):
 
 class PaymentCashListView(ListCreateAPIView):
     queryset = PaymentCash.objects.all()
-    serializer_class = PaymentCashSerializer
-    
+    serializer_class = PaymentCashSerializer   
 
 
 class PaymentCashDetailView(RetrieveUpdateDestroyAPIView):
     queryset = PaymentCash.objects.all()
-    serializer_class = PaymentCashSerializer
-    
+    serializer_class = PaymentCashSerializer    
 
 
 class PaymentChequeListView(ListCreateAPIView):
