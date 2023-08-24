@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from inventory_data.models import ItemCategory, Supplier, Item
 from stock_data.models import StockItemsInvoice, StockItem
 from .serializers import ItemCategorySerializer, SupplierSerializer, ItemSerializer
+from api.paginations import DefaultPagination
 
 class ItemCategoryList(ListCreateAPIView):
-
     queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer
+    pagination_class = DefaultPagination
     
 
 
@@ -28,6 +29,7 @@ class ItemCategoryDetail(RetrieveUpdateDestroyAPIView):
 class SupplierList(ListCreateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
+    pagination_class = DefaultPagination
     
 
 
@@ -45,7 +47,7 @@ class SupplierDetail(RetrieveUpdateDestroyAPIView):
 class ItemList(ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    
+    pagination_class = DefaultPagination
 
 
 class ItemDetail(RetrieveUpdateDestroyAPIView):

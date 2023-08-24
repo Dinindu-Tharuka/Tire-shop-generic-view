@@ -4,6 +4,12 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.response import Response
 from stock_data.models import StockItem, StockItemsInvoice
 from .serializers import StockItemSerializer, StockItemsInvoiceSerilizer
+from rest_framework.pagination import PageNumberPagination
+
+class pagenumber(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 5
 
 class StockItemList(ListCreateAPIView):
     queryset = StockItem.objects.all()
@@ -18,6 +24,8 @@ class StockItemDetail(RetrieveUpdateDestroyAPIView):
 class StockItemsInvoiceList(ListCreateAPIView):
     queryset = StockItemsInvoice.objects.all()
     serializer_class = StockItemsInvoiceSerilizer 
+
+    
 
     
 class StockItemsInvoiceDetail(RetrieveUpdateDestroyAPIView):

@@ -5,10 +5,17 @@ from rest_framework.response import Response
 from customer_data.models import Customer, Vehical
 from billing_data.models import Bill
 from .serializers import CustomerSerializer, VehicleSerializer
+from rest_framework.pagination import PageNumberPagination
+
+class pagenumber(PageNumberPagination):
+    page_size = 7
+    page_size_query_param = 'page_size'
+    max_page_size = 7
 
 class CustomerList(ListCreateAPIView):
     queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer    
+    serializer_class = CustomerSerializer   
+    pagination_class = pagenumber 
 
 
 class CustomerDetail(RetrieveUpdateDestroyAPIView):
