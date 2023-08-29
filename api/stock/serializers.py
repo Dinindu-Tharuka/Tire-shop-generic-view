@@ -1,9 +1,14 @@
 from rest_framework import serializers
 from stock_data.models import StockItem, StockItemsInvoice
-import pprint
+
+
+class StockItemDefaultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockItem
+        fields = ['id', 'item', 'retail_price', 'date', 'stock_item_invoice', 'cost', 'selling_price', 'discount', 'qty', 'sold_qty']
 
 class StockItemSerializer(serializers.ModelSerializer):
-  
+    stock_item_invoice = serializers.CharField(read_only=True)
     class Meta:
         model = StockItem
         fields = ['id', 'item', 'retail_price', 'date', 'stock_item_invoice', 'cost', 'selling_price', 'discount', 'qty', 'sold_qty']
@@ -21,15 +26,14 @@ class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
         invoice = StockItemsInvoice.objects.create(**validated_data)
 
         for item in items:
-            item.pop('stock_item_invoice')
+            # item.pop('stock_item_invoice')
             StockItem.objects.create(stock_item_invoice=invoice, **item)
         return invoice
     
     def update(self, instance, validated_data):
 
         
-        stockitems_data = validated_data.pop('stockitems')    
-    
+        stockitems_data = validated_data.pop('stockitems')        
 
         # Update the invoice fields
         instance.total_amount = validated_data.get('total_amount', instance.total_amount)
@@ -40,8 +44,6 @@ class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
         instance.save()
 
         for stockitem_data in stockitems_data:    
-            stockitem_data.pop('stock_item_invoice') 
-            # Check if available duplicates         
-            if stockitem_data.get('item') not in previousely_entered_stock_items:
-                StockItem.objects.create(stock_item_invoice=instance, **stockitem_data)
+            stockitem_data.pop('stock_item_invoice')            
+            StockItem.objects.create(stock_item_invoice=instance, **stockitem_data)
         return instance

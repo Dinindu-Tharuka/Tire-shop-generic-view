@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
-from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
+from api.paginations import DefaultPagination
+from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
 
 
@@ -18,6 +19,7 @@ class BillListView(ListCreateAPIView):
                     .prefetch_related('bill_payments__payments_credit') \
                     .order_by('-date').all()
     serializer_class = BillSerializer    
+    pagination_class = DefaultPagination
 
 
 class BillDetailView(RetrieveUpdateDestroyAPIView):

@@ -11,6 +11,8 @@ class ItemCategoryList(ListCreateAPIView):
     queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer
     pagination_class = DefaultPagination
+
+    
     
 
 
