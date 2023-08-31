@@ -21,7 +21,7 @@ class Bill(models.Model):
 class BillItems(models.Model):
     item = models.ForeignKey(Item, on_delete=models.PROTECT, related_name='items')
     stock_item = models.ForeignKey(StockItem, on_delete=models.PROTECT, related_name='bill_items')
-    bill = models.ForeignKey(Bill, on_delete=models.PROTECT, related_name='bill_items')
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill_items')
     qty = models.PositiveSmallIntegerField()   
     customer_discount = models.DecimalField(max_digits=8, decimal_places=2)    
     customer_price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -29,7 +29,7 @@ class BillItems(models.Model):
 class BillServises(models.Model):
     service = models.ForeignKey(Service, on_delete=models.PROTECT, related_name='bill_services')
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, related_name='bill_services')
-    bill = models.ForeignKey(Bill, on_delete=models.PROTECT, related_name='bill_services')
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill_services')
 
    
 
@@ -38,6 +38,7 @@ PAYMENT_CASH = 'cash'
 PAYMENT_CHEQUE = 'cheque'
 PAYMENT_CREDIT_CARD = 'credit_card'
 PAYMENT_CREDIT = 'credit'
+PAYMENT_MULTIPLE = 'multiple'
 
 PAYMENT_METHODS = [
     (PAYMENT_SELECT, 'Select'),
@@ -45,10 +46,11 @@ PAYMENT_METHODS = [
     (PAYMENT_CHEQUE, 'Cheque'),
     (PAYMENT_CREDIT_CARD, 'Credit Card'),
     (PAYMENT_CREDIT, 'Credit'),
+    (PAYMENT_MULTIPLE, 'multiple'),
 ]
 
 class BillPayment(models.Model):
-    bill = models.ForeignKey(Bill, on_delete=models.PROTECT, related_name='bill_payments')
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill_payments')
 
     date = models.DateField(auto_now_add=True)
     discount = models.DecimalField(max_digits=8, decimal_places=2)
@@ -59,7 +61,7 @@ class BillPayment(models.Model):
     
     
 class PaymentCash(models.Model):
-    bill_payment = models.ForeignKey(BillPayment, on_delete=models.PROTECT, related_name='payments_cash')
+    bill_payment = models.ForeignKey(BillPayment, on_delete=models.CASCADE, related_name='payments_cash')
 
     date = models.DateField(auto_now_add=True)
     payeename = models.CharField(max_length=50)
@@ -69,7 +71,7 @@ class PaymentCash(models.Model):
 
 
 class PaymentCheque(models.Model):
-    bill_payment = models.ForeignKey(BillPayment, on_delete=models.PROTECT, related_name='payment_cheques')
+    bill_payment = models.ForeignKey(BillPayment, on_delete=models.CASCADE, related_name='payment_cheques')
 
     date = models.DateField(auto_now_add=True)
     amount = models.DecimalField(max_digits=8, decimal_places=2)
@@ -83,7 +85,7 @@ class PaymentCheque(models.Model):
 
 
 class PaymentCreditCard(models.Model):
-    bill_payment = models.ForeignKey(BillPayment, on_delete=models.PROTECT, related_name='payments_credit_card')
+    bill_payment = models.ForeignKey(BillPayment, on_delete=models.CASCADE, related_name='payments_credit_card')
 
     date = models.DateField(auto_now_add=True)
     payeename = models.CharField(max_length=50)
@@ -92,7 +94,7 @@ class PaymentCreditCard(models.Model):
     
 
 class PaymentCredit(models.Model):
-    bill_payment = models.ForeignKey(BillPayment, on_delete=models.PROTECT, related_name='payments_credit')
+    bill_payment = models.ForeignKey(BillPayment, on_delete=models.CASCADE, related_name='payments_credit')
 
     date = models.DateField(auto_now_add=True)
     due_date = models.DateField()

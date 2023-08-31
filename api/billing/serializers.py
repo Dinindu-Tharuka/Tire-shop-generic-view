@@ -4,12 +4,14 @@ from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, P
 
 
 class BillItemsSerializer(serializers.ModelSerializer):
+    bill = serializers.CharField(read_only=True)
     class Meta:
         model = BillItems
         fields = ['id', 'item', 'stock_item', 'bill', 'qty', 'customer_discount', 'customer_price']
 
 
 class BillServicesSerilizer(serializers.ModelSerializer):
+    bill = serializers.CharField(read_only = True)
     class Meta:
         model = BillServises
         fields =  ['id', 'service', 'employee', 'bill']
@@ -40,11 +42,13 @@ class BillPaymentSerializer(serializers.ModelSerializer):
     payments_cash = PaymentCashSerializer(many=True)
     payment_cheques = PaymentChequeSerializer(many=True)
     payments_credit_card = PaymentCreditCardSerializer(many=True)
-    payments_credit = PaymentCreditSerializer(many=True)
+    payments_credit = PaymentCreditSerializer(many=True)    
+
+    bill = serializers.CharField(read_only=True)
 
     class Meta:
         model = BillPayment
-        fields = ['id', 'bill', 'date', 'discount', 'payment_methods', 'payments_cash', 'payment_cheques', 'payments_credit_card', 'payments_credit']
+        fields = ['id', 'bill', 'date', 'discount', 'payments_cash', 'payment_cheques', 'payments_credit_card', 'payments_credit']
 
     def create(self, validated_data):
         payments_cash = validated_data.pop('payments_cash')
@@ -81,6 +85,8 @@ class BillSerializer(serializers.ModelSerializer):
         model = Bill
         fields = ['invoice_id', 'customer', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services', 'bill_payments']
 
+    
+
     def create(self, validated_data):
         items = validated_data.pop('bill_items')
         services = validated_data.pop('bill_services')
@@ -89,15 +95,15 @@ class BillSerializer(serializers.ModelSerializer):
         bill = Bill.objects.create(**validated_data)
         
         for item in items:
-            item.pop('bill')
+            # item.pop('bill')
             BillItems.objects.create(bill=bill, **item)
 
         for service in services:
-            service.pop('bill')
+            # service.pop('bill')
             BillServises.objects.create(bill=bill, **service)         
 
         for payment in payments:
-            payment.pop('bill')
+            # payment.pop('bill')
             payments_cash = payment.pop('payments_cash')
             payment_cheques = payment.pop('payment_cheques')
             payments_credit_card = payment.pop('payments_credit_card')
@@ -136,7 +142,7 @@ class BillSerializer(serializers.ModelSerializer):
         instance.save()
 
         for item in items:   
-            item.pop('bill')                    
+            # item.pop('bill')                    
             BillItems.objects.create(bill=instance, **item)
 
         for service in services:
@@ -171,3 +177,5 @@ class BillSerializer(serializers.ModelSerializer):
             index += 1
 
         return instance
+    
+    

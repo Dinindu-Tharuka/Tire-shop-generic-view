@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
 from api.paginations import DefaultPagination
+from stock_data.models import StockItem
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
 
@@ -34,15 +36,31 @@ class BillDetailView(RetrieveUpdateDestroyAPIView):
                     .order_by('-date').all()
     serializer_class = BillSerializer    
 
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        
+        print('bill items',instance.bill_items)
+        # StockItem.objects.update()
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class BillItemsListView(ListCreateAPIView):
     queryset = BillItems.objects.all()
     serializer_class = BillItemsSerializer    
 
+    
+
 
 class BillItemsDetailView(RetrieveUpdateDestroyAPIView):
     queryset = BillItems.objects.all()
-    serializer_class = BillItemsSerializer    
+    serializer_class = BillItemsSerializer  
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        print('items', instance)
+        return super().delete(request, *args, **kwargs)  
 
 
 class BillServisesListView(ListCreateAPIView):
