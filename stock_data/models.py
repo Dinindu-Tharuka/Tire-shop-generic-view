@@ -25,5 +25,4 @@ class StockItem(models.Model):
     qty = models.PositiveSmallIntegerField()
     sold_qty = models.PositiveSmallIntegerField()
 
-    def __str__(self) -> str:
-        return str(self.item.name)
+    

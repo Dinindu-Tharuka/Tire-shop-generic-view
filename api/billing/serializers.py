@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
-
+from stock_data.models import StockItem
 
 class BillItemsSerializer(serializers.ModelSerializer):
     bill = serializers.CharField(read_only=True)
@@ -96,6 +96,17 @@ class BillSerializer(serializers.ModelSerializer):
         
         for item in items:
             # item.pop('bill')
+            sold_stock_item = item.get('qty', 'None')
+            stock_item = item.get('stock_item', 'None')
+
+            try:
+                stock_item = StockItem.objects.get(pk=stock_item.id)
+                # print('count', stock_item.qty)
+                stock_item.qty = stock_item.qty - sold_stock_item
+                # print(stock_item.qty)
+                stock_item.save()
+            except:
+                pass
             BillItems.objects.create(bill=bill, **item)
 
         for service in services:
