@@ -48,12 +48,12 @@ INSTALLED_APPS = [
     'api.inventory',
     'api.stock',
     'api.billing',
+    'api.authentication',
     'customer_data',
     'services_data',
     'inventory_data',
     'stock_data',
     'billing_data',
-    'authentication',
 ]
 
 MIDDLEWARE = [
