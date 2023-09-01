@@ -5,12 +5,13 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
 from api.paginations import DefaultPagination
-from stock_data.models import StockItem
+from rest_framework.permissions import IsAuthenticated
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
 
 
 class BillListView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Bill.objects \
                     .prefetch_related('bill_items') \
                     .prefetch_related('bill_services') \
