@@ -40,20 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'rest_framework', 
-    'corsheaders',
-    'rest_framework_simplejwt.token_blacklist',   
+    'corsheaders',  
     'api',
     'api.services',
     'api.customer',
     'api.inventory',
     'api.stock',
     'api.billing',
-    'api.authentication',
+    'api.user',
     'customer_data',
     'services_data',
     'inventory_data',
     'stock_data',
     'billing_data',
+    'user_data',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tyre',
+        'NAME': 'tyre_auth',
         'PASSWORD':'1234',
         'PORT': '3310',
         'HOST': 'localhost',
@@ -156,16 +156,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+AUTH_USER_MODEL = 'user_data.UserAccount'
 
-REST_FRAMEWORK = {
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-      ],
-}
-
-SIMPLE_JWT = {
-     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-     'ROTATE_REFRESH_TOKENS': True,
-     'BLACKLIST_AFTER_ROTATION': True
-}
