@@ -2,24 +2,18 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 class UserAccountManager(BaseUserManager):
-    def create_user(self, user_name, email, password=None):
+    def create_user(self, user_name, email, password=None, **other_fields):
         if not email:
             return ValueError('Email field must be required.')
         
         email = self.normalize_email(email)
         email = email.lower()
 
-        user = self.model(user_name=user_name, email=email)
+        user = self.model(user_name=user_name, email=email, **other_fields)
         user.set_password(password)
         user.save()
         return user
     
-    def create_manager(self, user_name, email, password=None):
-        user = self.create_user(user_name, email, password)
-        user.is_manager = True
-        user.is_staff = True
-        user.save()
-        return user
     
     def create_superuser(self, user_name, email, password=None):
         user = self.create_user(user_name, email, password)
@@ -36,6 +30,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     objects = UserAccountManager()
     
     USERNAME_FIELD = 'user_name'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'is_manager']
 
 

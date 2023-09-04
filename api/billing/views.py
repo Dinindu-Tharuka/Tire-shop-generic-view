@@ -11,7 +11,6 @@ from .serializers import PaymentCashSerializer, PaymentChequeSerializer, Payment
 
 
 class BillListView(ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
     queryset = Bill.objects \
                     .prefetch_related('bill_items') \
                     .prefetch_related('bill_services') \
