@@ -172,11 +172,12 @@ REST_FRAMEWORK = {
     ),
 }
 
+DOMAIN = 'localhost:5173'
+SITE_NAME = 'localhost:5173'
 
 DJOSER = {
     'LOGIN_FIELD':'user_name',
-    'USER_CREATE_PASSWORD_RETYPE':True,
-    'PASSWORD_RESET_CONFIRM_URL':'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL':"password/reset/{uid}/{token}",
     'SERIALIZERS':{
         'user': 'api.user.serializers.UserCreateSerializer',
         'user_create': 'api.user.serializers.UserCreateSerializer',

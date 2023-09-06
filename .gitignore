@@ -1,2 +1,10 @@
-/env
+
+env
 .vscode
+
+user_data/migrations
+stock_data/migrations
+services_data/migrations
+inventory_data/migrations
+customer_data/migrations
+billing_data/migrations

@@ -6,5 +6,4 @@ urlpatterns = [
     path('stock-item-list/<int:pk>/', views.StockItemDetail.as_view()),
     path('stock-items-invoices/', views.StockItemsInvoiceList.as_view()),
     path('stock-items-invoices/<str:pk>/', views.StockItemsInvoiceDetail.as_view()),
-
 ]
