@@ -5,7 +5,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
 from api.paginations import DefaultPagination
-from rest_framework.permissions import IsAuthenticated
+from stock_data.models import StockItem
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
 
@@ -39,8 +39,16 @@ class BillDetailView(RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
         
-        print('bill items',instance.bill_items)
-        # StockItem.objects.update()
+        print('bill items',instance.invoice_id)
+        items = BillItems.objects.filter(bill=instance.invoice_id).all()
+
+        print('items', items)
+
+        for item in items:
+            remove_item_count = item.qty
+            stock_item = StockItem.objects.get(bill_items=item)
+            stock_item.qty += remove_item_count
+            stock = stock_item.save()         
 
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

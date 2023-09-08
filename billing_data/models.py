@@ -5,15 +5,14 @@ from services_data.models import Service, Employee
 from stock_data.models import StockItem
 
 
-
 class Bill(models.Model):
     invoice_id = models.CharField(max_length=50, primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, related_name='bills')
     
     date = models.DateField(auto_now_add=True)
-    discount_amount = models.DecimalField(max_digits=8, decimal_places=2)
-    sub_total = models.DecimalField(max_digits=8, decimal_places=2)
-    custome_item_value = models.DecimalField(max_digits=8, decimal_places=2)
+    discount_amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    sub_total = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    custome_item_value = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.invoice_id
@@ -51,18 +50,15 @@ PAYMENT_METHODS = [
 
 class BillPayment(models.Model):
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill_payments')
-
     date = models.DateField(auto_now_add=True)
     discount = models.DecimalField(max_digits=8, decimal_places=2)
     payment_methods = models.CharField(max_length=20, choices=PAYMENT_METHODS, default=PAYMENT_SELECT)
 
     def __str__(self) -> str:
-        return self.bill.invoice_id
-    
+        return self.bill.invoice_id    
     
 class PaymentCash(models.Model):
     bill_payment = models.ForeignKey(BillPayment, on_delete=models.CASCADE, related_name='payments_cash')
-
     date = models.DateField(auto_now_add=True)
     payeename = models.CharField(max_length=50)
     amount = models.DecimalField(max_digits=8, decimal_places=2)

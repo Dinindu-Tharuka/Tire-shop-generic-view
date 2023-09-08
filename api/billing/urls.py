@@ -9,7 +9,7 @@ urlpatterns = [
     path('bill-service/', views.BillServisesListView.as_view()),
     path('bill-service/<int:pk>/', views.BillServisesDetailView.as_view()),
     path('bill-payments/', views.BillPaymentListView.as_view()),
-    path('bill-payments/<int:pk>/', views.BillPaymentDetailView.as_view()),
+    path('bill-payments/<str:pk>/', views.BillPaymentDetailView.as_view()),
     path('payments-cash/', views.PaymentCashListView.as_view()),
     path('payments-cash/<int:pk>/', views.PaymentCashDetailView.as_view()),
     path('payments-cheque/', views.PaymentChequeListView.as_view()),
