@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status 
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
@@ -20,8 +21,7 @@ class BillListView(ListCreateAPIView):
                     .prefetch_related('bill_payments__payments_credit_card') \
                     .prefetch_related('bill_payments__payments_credit') \
                     .order_by('-date').all()
-    serializer_class = BillSerializer    
-    pagination_class = DefaultPagination
+    serializer_class = BillSerializer   
 
 
 class BillDetailView(RetrieveUpdateDestroyAPIView):

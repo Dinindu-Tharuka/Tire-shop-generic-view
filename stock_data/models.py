@@ -14,8 +14,8 @@ class StockItemsInvoice(models.Model):
         return self.invoice_no
 
 class StockItem(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True, blank=True)
-    stock_item_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.PROTECT, related_name='stockitems')
+    item = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True, blank=True, related_name='stock_items')
+    stock_item_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.CASCADE, related_name='stockitems')
 
     retail_price = models.DecimalField(max_digits=8, decimal_places=2)
     cost = models.DecimalField(max_digits=8, decimal_places=2)

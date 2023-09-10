@@ -8,3 +8,5 @@ services_data/migrations
 inventory_data/migrations
 customer_data/migrations
 billing_data/migrations
+
+venv
