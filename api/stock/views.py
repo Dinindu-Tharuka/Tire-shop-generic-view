@@ -19,8 +19,13 @@ class StockItemDetail(RetrieveUpdateDestroyAPIView):
 
 
 class StockItemsInvoiceList(ListCreateAPIView):
-    queryset = StockItemsInvoice.objects.order_by('-date').all()
     serializer_class = StockItemsInvoiceSerilizer
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+        query= self.request.GET.get('invoiceIdFilter')
+        queryset = StockItemsInvoice.objects.order_by('-date').filter(invoice_no__startswith=query)
+        return queryset
 
 
 class StockItemsInvoiceDetail(RetrieveUpdateDestroyAPIView):

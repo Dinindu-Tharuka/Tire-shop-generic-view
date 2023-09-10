@@ -22,6 +22,7 @@ class BillListView(ListCreateAPIView):
                     .prefetch_related('bill_payments__payments_credit') \
                     .order_by('-date').all()
     serializer_class = BillSerializer   
+    pagination_class = DefaultPagination
 
 
 class BillDetailView(RetrieveUpdateDestroyAPIView):
