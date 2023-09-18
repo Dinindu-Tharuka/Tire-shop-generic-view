@@ -6,7 +6,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
 from api.paginations import DefaultPagination
-from stock_data.models import StockItem
+from stock_data.models import StockItem, StockItemUnique
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
 
@@ -15,17 +15,28 @@ class BillListView(ListCreateAPIView):
     serializer_class = BillSerializer   
     pagination_class = DefaultPagination
 
-    def get_queryset(self):
+    def get_queryset(self):        
         query = self.request.GET.get('billIdFilter')
-        queryset = Bill.objects \
-                        .prefetch_related('bill_items') \
-                        .prefetch_related('bill_services') \
-                        .prefetch_related('bill_payments') \
-                        .prefetch_related('bill_payments__payments_cash') \
-                        .prefetch_related('bill_payments__payment_cheques') \
-                        .prefetch_related('bill_payments__payments_credit_card') \
-                        .prefetch_related('bill_payments__payments_credit') \
-                        .order_by('-date').filter(invoice_id__startswith=query).all()
+        if query:
+            queryset = Bill.objects \
+                            .prefetch_related('bill_items') \
+                            .prefetch_related('bill_services') \
+                            .prefetch_related('bill_payments') \
+                            .prefetch_related('bill_payments__payments_cash') \
+                            .prefetch_related('bill_payments__payment_cheques') \
+                            .prefetch_related('bill_payments__payments_credit_card') \
+                            .prefetch_related('bill_payments__payments_credit') \
+                            .order_by('-date').filter(invoice_id__startswith=query).all()
+        else:
+            queryset = Bill.objects \
+                            .prefetch_related('bill_items') \
+                            .prefetch_related('bill_services') \
+                            .prefetch_related('bill_payments') \
+                            .prefetch_related('bill_payments__payments_cash') \
+                            .prefetch_related('bill_payments__payment_cheques') \
+                            .prefetch_related('bill_payments__payments_credit_card') \
+                            .prefetch_related('bill_payments__payments_credit') \
+                            .order_by('-date').all()
         return queryset
 
 

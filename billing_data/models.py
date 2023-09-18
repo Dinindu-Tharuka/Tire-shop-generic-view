@@ -2,7 +2,7 @@ from django.db import models
 from customer_data.models import Customer
 from inventory_data.models import Item
 from services_data.models import Service, Employee
-from stock_data.models import StockItem
+from stock_data.models import StockItem, StockItemUnique
 
 
 class Bill(models.Model):
@@ -18,16 +18,16 @@ class Bill(models.Model):
         return self.invoice_id
 
 class BillItems(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.PROTECT, related_name='items')
-    stock_item = models.ForeignKey(StockItem, on_delete=models.PROTECT, related_name='bill_items')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='items')
+    stock_item_unique = models.ForeignKey(StockItemUnique, on_delete=models.CASCADE, related_name='bill_items')
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill_items')
     qty = models.PositiveSmallIntegerField()   
     customer_discount = models.DecimalField(max_digits=8, decimal_places=2)    
     customer_price = models.DecimalField(max_digits=8, decimal_places=2)
 
 class BillServises(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.PROTECT, related_name='bill_services')
-    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, related_name='bill_services')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bill_services')
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='bill_services')
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill_services')
 
    

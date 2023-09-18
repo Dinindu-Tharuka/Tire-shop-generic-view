@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
-from stock_data.models import StockItem
+from stock_data.models import StockItem, StockItemUnique
 
 class BillItemsSerializer(serializers.ModelSerializer):
     bill = serializers.CharField(read_only=True)
     class Meta:
         model = BillItems
-        fields = ['id', 'item', 'stock_item', 'bill', 'qty', 'customer_discount', 'customer_price']
+        fields = ['id', 'item', 'stock_item_unique', 'bill', 'qty', 'customer_discount', 'customer_price']
 
 
 class BillServicesSerilizer(serializers.ModelSerializer):
@@ -102,15 +102,38 @@ class BillSerializer(serializers.ModelSerializer):
         for item in items:
             # item.pop('bill')
             sold_stock_item = item.get('qty', 'None')
-            stock_item = item.get('stock_item', 'None')
+            stock_item = item.get('stock_item_unique', 'None')
+            print('item', stock_item.item.item_id)
 
             try:
-                stock_item = StockItem.objects.get(pk=stock_item.id)
-                # print('count', stock_item.qty)
-                stock_item.qty = stock_item.qty - sold_stock_item
-                # print(stock_item.qty)
-                stock_item.save()
+                stock_item_unique = StockItemUnique.objects.get(item=stock_item.item.item_id)
+                stock_item_unique.total_qty = stock_item_unique.total_qty - sold_stock_item
+                stock_item_unique.save()
+                stock_items = StockItem.objects.all()
+
+                for stock_item in stock_items:
+                    print(stock_item)
+                    print('stock_item_unique.id', stock_item_unique.id)
+                    print('unique', stock_item.stock_item_unique.id)
+                    if stock_item_unique.id == stock_item.stock_item_unique.id:
+                        print('ok')
+                        print('stock item qty', stock_item.qty)
+                        print('sold qty', sold_stock_item)
+                        print('')
+                        if stock_item.qty > sold_stock_item:
+                            print('ok')
+                            stock_item.qty = stock_item.qty - sold_stock_item
+                            stock_item.save()
+                            break
+                        else:
+                            sold_stock_item = sold_stock_item - stock_item.qty 
+                            stock_item.qty = 0
+                            stock_item.save()
+
+                    
+                    
             except:
+                print('Not getting')
                 pass
             BillItems.objects.create(bill=bill, **item)
 
