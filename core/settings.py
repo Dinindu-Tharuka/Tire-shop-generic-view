@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tyre_auth',
+        'NAME': 'store_item_matter',
         'PASSWORD':'1234',
         'PORT': '3310',
         'HOST': 'localhost',

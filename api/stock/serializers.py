@@ -1,49 +1,61 @@
 from rest_framework import serializers
-from stock_data.models import StockItem, StockItemsInvoice
+from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique
+
+class StockItemUniqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockItemUnique
+        fields = ['id', 'item', 'total_qty', 'unit_price']
 
 
 class StockItemDefaultSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockItem
-        fields = ['id', 'item', 'retail_price', 'date', 'stock_item_invoice', 'cost', 'selling_price', 'discount', 'qty', 'sold_qty']
+        fields = ['id', 'stock_invoice', 'stock_item_unique', 'item', 'retail_price', 'cost', 'customer_price', 'supplier_discount', 'sales_discount', 'customer_discount', 'qty', 'customer_unit_price']
 
 class StockItemSerializer(serializers.ModelSerializer):
-    stock_item_invoice = serializers.CharField(read_only=True)
+    # stock_item_invoice = serializers.CharField(read_only=True)
+    id = serializers.IntegerField(read_only=True)
     class Meta:
         model = StockItem
-        fields = ['id', 'item', 'retail_price', 'date', 'stock_item_invoice', 'cost', 'selling_price', 'discount', 'qty', 'sold_qty']
+        fields = ['id', 'stock_invoice', 'stock_item_unique', 'item', 'retail_price', 'cost', 'customer_price', 'supplier_discount', 'sales_discount', 'customer_discount', 'qty', 'customer_unit_price']
 
 class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
-    stockitems = StockItemSerializer(many=True)
+    stock_items = StockItemSerializer(many=True)
     date = serializers.DateTimeField(read_only=True)
     
     class Meta:
         model = StockItemsInvoice
-        fields = ['invoice_no', 'date', 'total_amount', 'total_discount', 'supplier', 'stockitems']
+        fields = ['invoice_no', 'date', 'total_amount', 'total_discount', 'supplier', 'stock_items']
 
     def create(self, validated_data):
-        items = validated_data.pop('stockitems')
+        items = validated_data.pop('stock_items')
         invoice = StockItemsInvoice.objects.create(**validated_data)
 
+        print('items', items)
+        stock_items = []
         for item in items:
-            # item.pop('stock_item_invoice')
-            StockItem.objects.create(stock_item_invoice=invoice, **item)
+            item.pop('stock_invoice')
+            item.pop('stock_item_unique')
+            stock_item = item['item']
+            unit_price = item['customer_unit_price']
+            qty = item['qty']
+            print('unit_price', unit_price)
+            print('qty', qty)
+            print('item', stock_item)
+            
+            try:
+                stock_item_unique = StockItemUnique.objects.get(item__item_id=stock_item, unit_price=unit_price)
+                stock_item_unique.total_qty += qty
+                stock_item_unique.save()
+                print('stock unique id', stock_item_unique.id)
+                StockItem.objects.create(stock_invoice=invoice, stock_item_unique_id=stock_item_unique.id, **item)
+                print('gt item', stock_item_unique)
+            except:
+                print('Not get item')
+                stock_item_unique = StockItemUnique.objects.create(item=stock_item, total_qty=qty, unit_price=unit_price)
+                StockItem.objects.create(stock_invoice=invoice, stock_item_unique=stock_item_unique, **item)
+                print('created stock unique')
+        invoice.stock_items.set(stock_items)
         return invoice
     
-    def update(self, instance, validated_data):
-
-        
-        stockitems_data = validated_data.pop('stockitems')        
-
-        # Update the invoice fields
-        instance.total_amount = validated_data.get('total_amount', instance.total_amount)
-        instance.total_discount = validated_data.get('total_discount', instance.total_discount)
-
-        # Get record of previous stock items
-        previousely_entered_stock_items = [item.item for item in instance.stockitems.all()]        
-        instance.save()
-
-        for stockitem_data in stockitems_data:    
-            stockitem_data.pop('stock_item_invoice')            
-            StockItem.objects.create(stock_item_invoice=instance, **stockitem_data)
-        return instance
+    
