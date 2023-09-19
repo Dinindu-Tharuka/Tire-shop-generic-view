@@ -34,3 +34,4 @@ class StockItem(models.Model):
     customer_discount = models.DecimalField(max_digits=10, decimal_places=2)
     qty = models.PositiveSmallIntegerField()
     customer_unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    max_qty = models.PositiveIntegerField()

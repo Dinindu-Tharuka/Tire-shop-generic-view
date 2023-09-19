@@ -56,15 +56,35 @@ class BillDetailView(RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         
         print('bill items',instance.invoice_id)
-        items = BillItems.objects.filter(bill=instance.invoice_id).all()
+        bill_items = BillItems.objects.filter(bill=instance.invoice_id).all()
 
-        print('items', items)
+        print('items', bill_items)
 
-        for item in items:
-            remove_item_count = item.qty
-            stock_item = StockItem.objects.get(bill_items=item)
-            stock_item.qty += remove_item_count
-            stock = stock_item.save()         
+        for bill_item in bill_items:
+            item_in_stock = bill_item.item
+            print('item_in_stock', item_in_stock)
+            unit_price = bill_item.customer_unit_price
+            print('customer_unit_price', unit_price)
+            remove_item_count = bill_item.qty
+            try:
+                stock_item_unique = StockItemUnique.objects.get(item=item_in_stock, unit_price=unit_price)
+                print('stock_item_unique', stock_item_unique)
+                stock_item_unique.total_qty += remove_item_count
+                stock_item_unique.save()    
+                stock_items = StockItem.objects.filter(stock_item_unique__id=stock_item_unique.id).all()
+                print('stock_items', stock_items)
+                for stock_item in stock_items:
+                    if stock_item.max_qty >= remove_item_count:
+                        stock_item.qty = stock_item.qty + remove_item_count
+                        stock_item.save()
+                        break
+                    else:
+                        stock_item.qty = stock_item.qty + stock_item.max_qty
+                        remove_item_count = remove_item_count - stock_item.max_qty
+                        stock_item.save()
+            except:
+                print('Error')
+                pass
 
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

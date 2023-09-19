@@ -7,7 +7,7 @@ class BillItemsSerializer(serializers.ModelSerializer):
     bill = serializers.CharField(read_only=True)
     class Meta:
         model = BillItems
-        fields = ['id', 'item', 'stock_item_unique', 'bill', 'qty', 'customer_discount', 'customer_price']
+        fields = ['id', 'item', 'stock_item_unique', 'bill', 'qty', 'customer_discount', 'customer_price', 'customer_unit_price']
 
 
 class BillServicesSerilizer(serializers.ModelSerializer):
@@ -64,19 +64,15 @@ class BillPaymentSerializer(serializers.ModelSerializer):
 
 
         for cash in payments_cash:
-            # cash.pop('bill_payment')
             PaymentCash.objects.create(bill_payment=bill_payment, **cash)
 
         for cheque in payment_cheques:
-            # cheque.pop('bill_payment')
             PaymentCheque.objects.create(bill_payment=bill_payment, **cheque)
 
         for credit_card in payments_credit_card:
-            # credit_card.pop('bill_payment')
             PaymentCreditCard.objects.create(bill_payment=bill_payment, **credit_card)
 
         for credit in payments_credit:
-            # credit.pop('bill_payment')
             PaymentCredit.objects.create(bill_payment=bill_payment, **credit)
 
         return bill_payment
@@ -85,7 +81,6 @@ class BillPaymentSerializer(serializers.ModelSerializer):
 class BillSerializer(serializers.ModelSerializer):
     bill_items = BillItemsSerializer(many=True)
     bill_services = BillServicesSerilizer(many=True)
-    # bill_payments = BillPaymentSerializer(many=True)
     class Meta:
         model = Bill
         fields = ['invoice_id', 'customer', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services']
@@ -95,15 +90,12 @@ class BillSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         items = validated_data.pop('bill_items')
         services = validated_data.pop('bill_services')
-        # payments = validated_data.pop('bill_payments')
 
         bill = Bill.objects.create(**validated_data)
         
         for item in items:
-            # item.pop('bill')
             sold_stock_item = item.get('qty', 'None')
             stock_item = item.get('stock_item_unique', 'None')
-            print('item', stock_item.item.item_id)
 
             try:
                 stock_item_unique = StockItemUnique.objects.get(item=stock_item.item.item_id)
@@ -112,58 +104,24 @@ class BillSerializer(serializers.ModelSerializer):
                 stock_items = StockItem.objects.all()
 
                 for stock_item in stock_items:
-                    print(stock_item)
-                    print('stock_item_unique.id', stock_item_unique.id)
-                    print('unique', stock_item.stock_item_unique.id)
                     if stock_item_unique.id == stock_item.stock_item_unique.id:
-                        print('ok')
-                        print('stock item qty', stock_item.qty)
-                        print('sold qty', sold_stock_item)
-                        print('')
                         if stock_item.qty > sold_stock_item:
-                            print('ok')
                             stock_item.qty = stock_item.qty - sold_stock_item
                             stock_item.save()
                             break
                         else:
                             sold_stock_item = sold_stock_item - stock_item.qty 
                             stock_item.qty = 0
-                            stock_item.save()
-
-                    
+                            stock_item.save()                  
                     
             except:
-                print('Not getting')
                 pass
             BillItems.objects.create(bill=bill, **item)
 
         for service in services:
-            # service.pop('bill')
             BillServises.objects.create(bill=bill, **service)        
 
         return bill
     
-    def update(self, instance, validated_data):
-        items = validated_data.pop('bill_items')  
-        services = validated_data.pop('bill_services')  
-        # payments = validated_data.pop('bill_payments')  
-
-        # Update the invoice fields
-        instance.discount_amount = validated_data.get('discount_amount', instance.discount_amount)
-        instance.sub_total = validated_data.get('sub_total', instance.sub_total)
-        instance.custome_item_value = validated_data.get('custome_item_value', instance.custome_item_value)
-        payments_count = instance.bill_payments.all().count()
-        instance.save()
-
-        for item in items:   
-            # item.pop('bill')                    
-            BillItems.objects.create(bill=instance, **item)
-
-        for service in services:
-            service.pop('bill')
-            BillServises.objects.create(bill=instance, **service)
-        
-
-        return instance
-    
+   
     

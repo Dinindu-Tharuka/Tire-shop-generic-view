@@ -24,6 +24,7 @@ class BillItems(models.Model):
     qty = models.PositiveSmallIntegerField()   
     customer_discount = models.DecimalField(max_digits=8, decimal_places=2)    
     customer_price = models.DecimalField(max_digits=8, decimal_places=2)
+    customer_unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
 class BillServises(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bill_services')
