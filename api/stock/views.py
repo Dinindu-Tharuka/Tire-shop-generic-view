@@ -2,11 +2,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from stock_data.models import StockItem, StockItemsInvoice
+from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique
 from billing_data.models import BillItems
 from api.paginations import DefaultPagination
-from .serializers import StockItemDefaultSerializer, StockItemsInvoiceSerilizer
+from .serializers import StockItemDefaultSerializer, StockItemsInvoiceSerilizer, StockItemUniqueSerializer
 
+
+class StockItemUniqueList(ListCreateAPIView):
+    queryset = StockItemUnique.objects.all()
+    serializer_class = StockItemUniqueSerializer
 
 class StockItemList(ListCreateAPIView):
     queryset = StockItem.objects.all()

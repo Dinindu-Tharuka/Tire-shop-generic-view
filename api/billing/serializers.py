@@ -7,7 +7,7 @@ class BillItemsSerializer(serializers.ModelSerializer):
     bill = serializers.CharField(read_only=True)
     class Meta:
         model = BillItems
-        fields = ['id', 'item', 'stock_item_unique', 'bill', 'qty', 'customer_discount', 'customer_price', 'customer_unit_price']
+        fields = ['id', 'item', 'stock_item_unique', 'bill', 'qty', 'customer_discount', 'customer_price']
 
 
 class BillServicesSerilizer(serializers.ModelSerializer):
@@ -96,6 +96,9 @@ class BillSerializer(serializers.ModelSerializer):
         for item in items:
             sold_stock_item = item.get('qty', 'None')
             stock_item = item.get('stock_item_unique', 'None')
+            customer_price = item['customer_price']
+            qty = item['qty']
+            customer_unit_price = customer_price/qty
 
             try:
                 stock_item_unique = StockItemUnique.objects.get(item=stock_item.item.item_id)
@@ -116,7 +119,7 @@ class BillSerializer(serializers.ModelSerializer):
                     
             except:
                 pass
-            BillItems.objects.create(bill=bill, **item)
+            BillItems.objects.create(bill=bill, customer_unit_price=customer_unit_price, **item)
 
         for service in services:
             BillServises.objects.create(bill=bill, **service)        
