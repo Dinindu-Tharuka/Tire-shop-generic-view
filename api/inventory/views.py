@@ -9,9 +9,17 @@ from api.paginations import DefaultPagination
 
 
 class ItemCategoryList(ListCreateAPIView):
-    queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer
     pagination_class = DefaultPagination
+
+    def get_queryset(self):
+        categoryNameFilterValue = self.request.GET.get('categoryNameFilter')
+        if categoryNameFilterValue:
+            queryset = ItemCategory.objects.filter(category_name__istartswith=categoryNameFilterValue)
+        else:
+            queryset = ItemCategory.objects.all()
+        return queryset
+
 
 
 class ItemCategoryDetail(RetrieveUpdateDestroyAPIView):
