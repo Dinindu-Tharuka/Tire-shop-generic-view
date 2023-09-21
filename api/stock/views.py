@@ -1,18 +1,19 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
-from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique
+from rest_framework.viewsets import ModelViewSet
+from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique, StockPayment
 from billing_data.models import BillItems
 from api.paginations import DefaultPagination
-from .serializers import StockItemDefaultSerializer, StockItemsInvoiceSerilizer, StockItemUniqueSerializer
+from .serializers import StockItemDefaultSerializer, StockItemsInvoiceSerilizer, StockItemUniqueSerializer, StockPaymentSerializer
 
 
 class StockItemUniqueList(ListCreateAPIView):
     queryset = StockItemUnique.objects.all()
     serializer_class = StockItemUniqueSerializer
 
-class StockItemList(ListCreateAPIView):
+class StockItemList(ListAPIView):
     queryset = StockItem.objects.all()
     serializer_class = StockItemDefaultSerializer
 
@@ -46,3 +47,11 @@ class StockItemsInvoiceDetail(RetrieveUpdateDestroyAPIView):
         stock_items_invoice = get_object_or_404(StockItemsInvoice, pk=pk)
         stock_items_invoice.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class StockPaymentList(ListCreateAPIView):
+    queryset = StockPayment.objects.all()
+    serializer_class = StockPaymentSerializer
+
+class StockPaymentDetail(RetrieveUpdateDestroyAPIView):
+    queryset = StockPayment.objects.all()
+    serializer_class = StockPaymentSerializer

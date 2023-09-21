@@ -17,7 +17,10 @@ class BillListView(ListCreateAPIView):
 
     def get_queryset(self):        
         query = self.request.GET.get('billIdFilter')
-        if query:
+        queryCustomer = self.request.GET.get('billFilterCustomer')
+        print(query)
+        print(queryCustomer)
+        if query or queryCustomer:
             queryset = Bill.objects \
                             .prefetch_related('bill_items') \
                             .prefetch_related('bill_services') \
@@ -26,7 +29,7 @@ class BillListView(ListCreateAPIView):
                             .prefetch_related('bill_payments__payment_cheques') \
                             .prefetch_related('bill_payments__payments_credit_card') \
                             .prefetch_related('bill_payments__payments_credit') \
-                            .order_by('-date').filter(invoice_id__startswith=query).all()
+                            .order_by('-date').filter(invoice_id__startswith=query).filter(customer__startswith=queryCustomer).all()
         else:
             queryset = Bill.objects \
                             .prefetch_related('bill_items') \

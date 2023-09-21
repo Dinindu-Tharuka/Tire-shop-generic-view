@@ -35,3 +35,19 @@ class StockItem(models.Model):
     qty = models.PositiveSmallIntegerField()
     customer_unit_price = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
     max_qty = models.PositiveIntegerField()
+
+PAYMENT_SELECT = 'select'
+PAYMENT_CASH = 'cash'
+PAYMENT_CREDIT_CARD = 'credit_card'
+
+
+PAYMENT_METHODS = [
+    (PAYMENT_SELECT, 'Select'),
+    (PAYMENT_CASH, 'Cash'),
+    (PAYMENT_CREDIT_CARD, 'Credit Card'),
+]
+
+class StockPayment(models.Model):
+    payment_method = models.CharField(max_length=20)
+    amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+    stock_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.PROTECT)

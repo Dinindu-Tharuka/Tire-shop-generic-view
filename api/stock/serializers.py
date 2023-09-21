@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique
+from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique, StockPayment
 
 class StockItemUniqueSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +10,7 @@ class StockItemUniqueSerializer(serializers.ModelSerializer):
 class StockItemDefaultSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockItem
-        fields = ['id', 'stock_invoice', 'stock_item_unique', 'item', 'retail_price', 'cost', 'customer_price', 'supplier_discount', 'sales_discount', 'customer_discount', 'qty', 'customer_unit_price']
+        fields = ['id', 'stock_invoice', 'stock_item_unique', 'item', 'retail_price', 'cost', 'customer_price', 'supplier_discount', 'sales_discount', 'customer_discount', 'qty', 'customer_unit_price', 'max_qty']
 
 class StockItemSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -50,3 +50,7 @@ class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
         return invoice
     
     
+class StockPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=StockPayment
+        fields=['id', 'payment_method', 'amount', 'stock_invoice']
