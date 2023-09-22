@@ -3,6 +3,7 @@ from customer_data.models import Customer
 from inventory_data.models import Item
 from services_data.models import Service, Employee
 from stock_data.models import StockItem, StockItemUnique
+from dag_section_data.models import ReceivedSupplierTyre
 
 
 class Bill(models.Model):
@@ -100,4 +101,9 @@ class PaymentCredit(models.Model):
 
     
 
+class DagInvoicePayment(models.Model):
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    received_supplier_tyre = models.OneToOneField(ReceivedSupplierTyre, on_delete=models.CASCADE)    
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    customer_price = models.DecimalField(max_digits=10, decimal_places=2)
 

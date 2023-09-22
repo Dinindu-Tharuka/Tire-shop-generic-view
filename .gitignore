@@ -8,5 +8,8 @@ services_data/migrations
 inventory_data/migrations
 customer_data/migrations
 billing_data/migrations
+dag_section_data/migrations
+dag_section_data/__pycache__
+
 
 venv
