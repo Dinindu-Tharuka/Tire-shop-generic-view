@@ -10,7 +10,7 @@ class TakenTyre(models.Model):
 
 class CustomerTakenTyre(models.Model):
     rebuild_id = models.CharField(max_length=50, primary_key=True)
-    tyre_taken = models.ForeignKey(TakenTyre, on_delete=models.CASCADE)
+    tyre_taken = models.ForeignKey(TakenTyre, on_delete=models.CASCADE, related_name='customer_tyres')
     tyre_no = models.CharField(max_length=50)
     size = models.CharField(max_length=50)
     brand = models.CharField(max_length=50)
