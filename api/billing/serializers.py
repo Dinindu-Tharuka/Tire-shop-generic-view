@@ -89,33 +89,22 @@ class BillSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         items = validated_data.pop('bill_items')
-        print(items, 'items')
         services = validated_data.pop('bill_services')
-
         bill = Bill.objects.create(**validated_data)
         
         for item in items:
             sold_stock_item = item.get('qty', 'None')
-            print('sold_stock_item',sold_stock_item)
             stock_item = item.get('stock_item_unique', 'None')
-            print('stock_item',stock_item)
-
             customer_price = item['customer_price']
-            print('customer_price',customer_price)
-
             qty = item['qty']
-            print('qty', qty)
             customer_unit_price = customer_price/qty
 
-            print('stock_item.item.item_id', stock_item.item.item_id)
-
             try:
-                stock_item_unique = StockItemUnique.objects.get(item=stock_item.item.item_id, unit_price=customer_unit_price)
-                print('stock_item_unique', stock_item_unique)
+                stock_item_unique = StockItemUnique.objects.get(item=stock_item.item.item_id, unit_price=customer_unit_price)                
                 stock_item_unique.total_qty = stock_item_unique.total_qty - sold_stock_item
                 stock_item_unique.save()
                 stock_items = StockItem.objects.all()
-                print('ok')
+                
 
                 for stock_item in stock_items:
                     if stock_item_unique.id == stock_item.stock_item_unique.id:

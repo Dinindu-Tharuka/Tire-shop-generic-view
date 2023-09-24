@@ -6,5 +6,5 @@ class TakenTyreAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(CustomerTakenTyre)
-class CustomerTakenTyreAdmin(CustomerTakenTyre):
+class CustomerTakenTyreAdmin(admin.ModelAdmin):
     pass

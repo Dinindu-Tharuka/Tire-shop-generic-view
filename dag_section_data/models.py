@@ -8,12 +8,18 @@ class TakenTyre(models.Model):
     vehicle = models.ForeignKey(Vehical,on_delete=models.CASCADE)
     taken_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self) -> str:
+        return f'{self.customer}'
+
 class CustomerTakenTyre(models.Model):
     rebuild_id = models.CharField(max_length=50, primary_key=True)
     tyre_taken = models.ForeignKey(TakenTyre, on_delete=models.CASCADE, related_name='customer_tyres')
     tyre_no = models.CharField(max_length=50)
     size = models.CharField(max_length=50)
     brand = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.rebuild_id
 
 
 ## Send part
