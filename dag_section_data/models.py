@@ -26,7 +26,10 @@ class CustomerTakenTyre(models.Model):
 class SendTyre(models.Model):
     order_no = models.CharField(max_length=50, primary_key=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    customer_taken_tyre = models.OneToOneField(CustomerTakenTyre, on_delete=models.CASCADE)
+    taken_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.order_no
 
 
 
@@ -39,10 +42,13 @@ STATUS = [
 ]
 
 class SendSupplierTyre(models.Model):
-    job_no = models.CharField(max_length=50, primary_key=True)
-    send_tyre = models.ForeignKey(SendTyre, on_delete=models.CASCADE)
+    job_no = models.CharField(max_length=50, unique=True)
+    send_tyre = models.ForeignKey(SendTyre, on_delete=models.CASCADE, related_name='send_tyres')
     customer_taken_tyre = models.OneToOneField(CustomerTakenTyre, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS, default=SELECT)
+
+    def __str__(self) -> str:
+        return self.job_no
 
 
 ## Received
