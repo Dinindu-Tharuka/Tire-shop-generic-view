@@ -33,7 +33,11 @@ class ItemCategoryDetail(RetrieveUpdateDestroyAPIView):
         customer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class SupplierAllList(ListCreateAPIView):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
 
+    
 class SupplierList(ListCreateAPIView):
     serializer_class = SupplierSerializer
     pagination_class = DefaultPagination
