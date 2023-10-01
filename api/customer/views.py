@@ -8,7 +8,7 @@ from .serializers import CustomerSerializer, VehicleSerializer
 from api.paginations import DefaultPagination
 
 class CustomerAllList(ListCreateAPIView):
-    queryset = Customer.objects.all()
+    queryset = Customer.objects.order_by('name').all()
     serializer_class = CustomerSerializer
 
 class CustomerList(ListCreateAPIView):

@@ -52,7 +52,6 @@ class SendSupplierTyre(models.Model):
 
 
 ## Received
-
 class ReceivedTyre(models.Model):
     invoice_no = models.CharField(max_length=50, primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
@@ -68,7 +67,7 @@ STATUS_RECEIVED = [
 
 
 class ReceivedSupplierTyre(models.Model):
-    send_supplier_tyre = models.OneToOneField(SendSupplierTyre, on_delete=models.CASCADE)
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=STATUS_RECEIVED, default=SELECT)
-    received_tyre = models.ForeignKey(ReceivedTyre, on_delete=models.CASCADE)
+    received_tyre = models.ForeignKey(ReceivedTyre, on_delete=models.CASCADE, related_name='received_tyres')
+    send_supplier_tyre = models.OneToOneField(SendSupplierTyre, on_delete=models.CASCADE)
