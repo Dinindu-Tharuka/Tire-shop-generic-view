@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
+from billing_data.models import DagInvoicePayment
 from stock_data.models import StockItem, StockItemUnique
 
 class BillItemsSerializer(serializers.ModelSerializer):
@@ -128,4 +129,7 @@ class BillSerializer(serializers.ModelSerializer):
         return bill
     
    
-    
+class DagInvoicePaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DagInvoicePayment
+        fields = ['id', 'received_supplier_tyre', 'cost', 'customer_price']
