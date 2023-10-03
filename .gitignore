@@ -2,14 +2,26 @@
 env
 .vscode
 
-user_data/migrations
-stock_data/migrations
-services_data/migrations
-inventory_data/migrations
-customer_data/migrations
-billing_data/migrations
-dag_section_data/migrations
-dag_section_data/__pycache__
+user_data/migrations/*
+!user_data/migrations/__init__.py
+
+stock_data/migrations/*
+!stock_data/migrations/__init__.py
+
+services_data/migrations/*
+!services_data/migrations/__init__.py
+
+inventory_data/migrations/*
+!inventory_data/migrations/__init__.py
+
+customer_data/migrations/*
+!customer_data/migrations/__init__.py
+
+billing_data/migrations/*
+!billing_data/migrations/__init__.py
+
+dag_section_data/migrations/*
+!dag_section_data/migrations/__init__.py
 
 
 venv
