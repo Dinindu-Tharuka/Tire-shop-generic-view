@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from user_data.models import UserAccount, UserProfile
-from rest_framework.generics import RetrieveDestroyAPIView, ListCreateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from .serializers import UserSerializer, UserProfileSerializer
 
 
@@ -20,7 +20,7 @@ class UserView(ListCreateAPIView):
     serializer_class = UserSerializer
     
 
-class UserDetailView(RetrieveDestroyAPIView):
+class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = UserAccount.objects.all()
     serializer_class = UserSerializer
 
@@ -28,6 +28,6 @@ class UserProfileListView(ListCreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-class UserProfileDetailView(RetrieveDestroyAPIView):
+class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
