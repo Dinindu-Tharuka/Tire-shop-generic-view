@@ -7,9 +7,10 @@ from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
 from api.paginations import DefaultPagination
 from stock_data.models import StockItem, StockItemUnique
+from billing_data.models import DagInvoicePayment
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
-
+from .serializers import DagInvoicePaymentSerializer
 
 class BillListView(ListCreateAPIView):
     serializer_class = BillSerializer   
@@ -170,5 +171,9 @@ class PaymentCreditListView(ListCreateAPIView):
 class PaymentCreditDetailView(RetrieveUpdateDestroyAPIView):
     queryset  = PaymentCredit.objects.all()
     serializer_class = PaymentCreditSerializer
+
+class AllDagPaymentsView(ListCreateAPIView):
+    queryset = DagInvoicePayment.objects.all()
+    serializer_class = DagInvoicePaymentSerializer
 
     

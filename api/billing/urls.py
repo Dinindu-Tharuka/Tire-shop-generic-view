@@ -18,4 +18,5 @@ urlpatterns = [
     path('payments-credit-card/<int:pk>/', views.PaymentCreditCardDetailView.as_view()),
     path('payments-credit/', views.PaymentCreditListView.as_view()),
     path('payments-credit/<int:pk>/', views.PaymentCreditDetailView.as_view()),
+    path('all-dag-payments/', views.AllDagPaymentsView.as_view()),
 ]

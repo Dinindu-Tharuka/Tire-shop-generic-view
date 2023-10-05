@@ -24,8 +24,6 @@ class UserAccountManager(BaseUserManager):
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     user_name = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
@@ -33,5 +31,10 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
     USERNAME_FIELD = 'user_name'
     REQUIRED_FIELDS = ['email', 'is_manager']
+
+class UserProfile(models.Model):
+    user_account = models.OneToOneField(UserAccount, on_delete=models.CASCADE, related_name='profile')
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
 
 

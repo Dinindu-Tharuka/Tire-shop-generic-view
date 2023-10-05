@@ -182,5 +182,5 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "UPDATE_LAST_LOGIN": False,    
-    "AUTH_HEADER_TYPES": ('Bearer',),
+    "AUTH_HEADER_TYPES": ('JWT',),
 }

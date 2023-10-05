@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
-from billing_data.models import DagInvoicePayment
+from billing_data.models import DagInvoicePayment, ReceivedSupplierTyre
 from stock_data.models import StockItem, StockItemUnique
 
 class BillItemsSerializer(serializers.ModelSerializer):
@@ -78,19 +78,25 @@ class BillPaymentSerializer(serializers.ModelSerializer):
 
         return bill_payment
     
+class DagInvoicePaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DagInvoicePayment
+        fields = ['id', 'received_supplier_tyre', 'cost', 'customer_price']
     
 class BillSerializer(serializers.ModelSerializer):
     bill_items = BillItemsSerializer(many=True)
     bill_services = BillServicesSerilizer(many=True)
+    dag_payments = DagInvoicePaymentSerializer(many=True)
     class Meta:
         model = Bill
-        fields = ['invoice_id', 'customer', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services']
+        fields = ['invoice_id', 'customer', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services', 'dag_payments']
 
     
 
     def create(self, validated_data):
         items = validated_data.pop('bill_items')
         services = validated_data.pop('bill_services')
+        dag_payments = validated_data.pop('dag_payments')
         bill = Bill.objects.create(**validated_data)
         
         for item in items:
@@ -124,12 +130,15 @@ class BillSerializer(serializers.ModelSerializer):
             BillItems.objects.create(bill=bill, customer_unit_price=customer_unit_price, **item)
 
         for service in services:
-            BillServises.objects.create(bill=bill, **service)        
+            BillServises.objects.create(bill=bill, **service)     
+
+        for dag in dag_payments:
+            dag = DagInvoicePayment.objects.create(bill=bill, **dag)
+            # try:
+            #     supplier_tyre = ReceivedSupplierTyre.objects.get(id=dag.received_supplier_tyre)
+            #     supplier_tyre.delete()
+            # except
 
         return bill
     
    
-class DagInvoicePaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DagInvoicePayment
-        fields = ['id', 'received_supplier_tyre', 'cost', 'customer_price']
