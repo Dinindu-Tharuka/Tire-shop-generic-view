@@ -16,6 +16,14 @@ class UserProfileSerializer(base_serializer.ModelSerializer):
         model = UserProfile
         fields = ['id', 'first_name', 'last_name', 'user_account_id']
 
+class UserProfileCreateSerializer(base_serializer.ModelSerializer):
+    user_account_id = base_serializer.IntegerField()
+    class Meta:
+        model = UserProfile
+        fields = ['id', 'first_name', 'last_name', 'user_account_id']
+
+    
+
 class UserSerializer(base_serializer.ModelSerializer):
     profile = UserProfileSerializer()
     class Meta:
@@ -30,3 +38,5 @@ class UserSerializer(base_serializer.ModelSerializer):
         user.save()
         UserProfile.objects.create(user_account_id=user.id, **profile)
         return user
+    
+   
