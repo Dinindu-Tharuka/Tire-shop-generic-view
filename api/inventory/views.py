@@ -65,21 +65,32 @@ class SupplierDetail(RetrieveUpdateDestroyAPIView):
 
 class ItemListPagination(ListCreateAPIView):
     serializer_class = ItemSerializer
-    pagination_class = DefaultPagination
+    pagination_class = DefaultPagination   
 
     def get_queryset(self):
         query_item_id = self.request.GET.get('itemQuery')
         query_size = self.request.GET.get('itemSizeQuery')
+        query_brand = self.request.GET.get('itemBrandQuery')
 
-        print(query_item_id)
-       
-        
-        queryset = Item.objects.filter(item_id__startswith = query_item_id).filter(size__istartswith= query_size)
+        if query_item_id or query_size or query_brand:
+            queryset = Item.objects.filter(item_id__istartswith = query_item_id).filter(size__istartswith= query_size).filter(brand__istartswith=query_brand)
+        else:
+            queryset = Item.objects.all()    
         return queryset
 
 class ItemList(ListCreateAPIView):
-    queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        query_item_id = self.request.GET.get('itemQuery')
+        query_size = self.request.GET.get('itemSizeQuery')
+        query_brand = self.request.GET.get('itemBrandQuery')
+        
+        if query_item_id or query_size or query_brand:
+            queryset = Item.objects.filter(item_id__istartswith = query_item_id).filter(size__istartswith= query_size).filter(brand__istartswith=query_brand)
+        else:
+            queryset = Item.objects.all()    
+        return queryset
 
 
 class ItemDetail(RetrieveUpdateDestroyAPIView):

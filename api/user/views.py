@@ -18,6 +18,8 @@ class UserView(ListCreateAPIView):
             queryset = UserAccount.objects.filter(id = self.request.user.id)        
         return queryset
     serializer_class = UserSerializer
+
+    
     
 
 class UserDetailView(RetrieveUpdateDestroyAPIView):
