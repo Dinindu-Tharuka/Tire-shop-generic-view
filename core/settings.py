@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'billing_data',
     'user_data',
     'dag_section_data',
+    'report_data',
 ]
 
 MIDDLEWARE = [
