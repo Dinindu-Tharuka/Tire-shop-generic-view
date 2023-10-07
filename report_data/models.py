@@ -3,6 +3,7 @@ from dag_section_data.models import CustomerTakenTyre
 from customer_data.models import Customer, Vehical
 from inventory_data.models import Supplier
 
+
 class RebuildReport(models.Model):
     rebuild_id = models.OneToOneField(CustomerTakenTyre, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)

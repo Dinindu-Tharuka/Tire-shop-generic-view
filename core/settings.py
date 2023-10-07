@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'api.billing',
     'api.user',
     'api.dag_section',
+    'api.report',
     'customer_data',
     'services_data',
     'inventory_data',

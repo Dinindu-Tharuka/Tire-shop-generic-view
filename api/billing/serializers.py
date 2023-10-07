@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
-from billing_data.models import DagInvoicePayment, ReceivedSupplierTyre
+from billing_data.models import DagInvoicePayment
 from stock_data.models import StockItem, StockItemUnique
+from report_data.models import RebuildReport
+from dag_section_data.models import ReceivedSupplierTyre
 
 class BillItemsSerializer(serializers.ModelSerializer):
     bill = serializers.CharField(read_only=True)
@@ -125,7 +127,6 @@ class BillSerializer(serializers.ModelSerializer):
                             stock_item.save()                  
                     
             except:
-                print('not ok')
                 pass
             BillItems.objects.create(bill=bill, customer_unit_price=customer_unit_price, **item)
 
@@ -134,10 +135,15 @@ class BillSerializer(serializers.ModelSerializer):
 
         for dag in dag_payments:
             dag = DagInvoicePayment.objects.create(bill=bill, **dag)
-            # try:
-            #     supplier_tyre = ReceivedSupplierTyre.objects.get(id=dag.received_supplier_tyre)
-            #     supplier_tyre.delete()
-            # except
+            
+            try:
+                received_supplier_tyre = ReceivedSupplierTyre.objects.get(id=dag.received_supplier_tyre.id)               
+                rebuild_report = RebuildReport.objects.get(job_no=received_supplier_tyre.send_supplier_tyre.job_no)                
+                rebuild_report.invoice_date = bill.date
+                rebuild_report.save()
+            except:
+                pass
+
 
         return bill
     
