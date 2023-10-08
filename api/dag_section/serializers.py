@@ -116,7 +116,8 @@ class ReceivedTyreSerializer(serializers.ModelSerializer):
 
             try:
                 send_supplier_tyre = SendSupplierTyre.objects.get(job_no=received_supplier_tyre.send_supplier_tyre)                
-                rebuild_report = RebuildReport.objects.get(rebuild_id_id=send_supplier_tyre.customer_taken_tyre.rebuild_id)                
+                rebuild_report = RebuildReport.objects.get(rebuild_id_id=send_supplier_tyre.customer_taken_tyre.rebuild_id)    
+                rebuild_report.received_date = insatnce.date            
                 rebuild_report.status = received_supplier_tyre.status
                 rebuild_report.cost = received_supplier_tyre.cost
                 rebuild_report.save()

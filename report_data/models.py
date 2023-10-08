@@ -18,6 +18,8 @@ class RebuildReport(models.Model):
     order_no = models.CharField(max_length=50, null=True, blank=True)
     job_no = models.CharField(max_length=50, null=True, blank=True, unique=True)
 
+    received_date = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=20, null=True, blank=True)
-    invoice_date = models.CharField(max_length=100, null=True, blank=True)
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    invoice_date = models.CharField(max_length=100, null=True, blank=True)
