@@ -49,6 +49,9 @@ class TyreTakenDetailView(RetrieveUpdateDestroyAPIView):
             except:
                 CustomerTakenTyre.objects.create(**tyre, tyre_taken=instance)
         return super().update(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
 
 
 class AllSendSupplierTyres(ListCreateAPIView):
