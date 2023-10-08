@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from dag_section_data.models import TakenTyre, CustomerTakenTyre
 from dag_section_data.models import SendTyre, SendSupplierTyre
@@ -32,8 +32,6 @@ class TyreTakenDetailView(RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         customer_tyres = request.data.get('customer_tyres')
 
-        print(instance.customer_tyres.all(), 'customer_tyres')
-
         for saved_tyre in instance.customer_tyres.all():
             for tyre in customer_tyres:
                 if saved_tyre.rebuild_id == tyre['rebuild_id']:
@@ -50,8 +48,7 @@ class TyreTakenDetailView(RetrieveUpdateDestroyAPIView):
                 CustomerTakenTyre.objects.create(**tyre, tyre_taken=instance)
         return super().update(request, *args, **kwargs)
     
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
+    
 
 
 class AllSendSupplierTyres(ListCreateAPIView):
