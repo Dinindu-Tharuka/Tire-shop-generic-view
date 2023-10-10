@@ -13,8 +13,11 @@ class RebuildReportPageListView(ListCreateAPIView):
 
     def get_queryset(self):
         pageReportsRebuildIdFilter = self.request.GET.get('pageReportsRebuildIdFilter')
-        if pageReportsRebuildIdFilter:
-            queryset = RebuildReport.objects.filter(rebuild_id__rebuild_id__istartswith=pageReportsRebuildIdFilter) 
+        pageReportsJobNoFilter = self.request.GET.get('pageReportsJobNoFilter')
+        if pageReportsRebuildIdFilter or pageReportsJobNoFilter:
+            queryset = RebuildReport.objects\
+                        .filter(rebuild_id__rebuild_id__istartswith=pageReportsRebuildIdFilter)\
+                        .filter(job_no__istartswith=pageReportsJobNoFilter)
         else:
             queryset = RebuildReport.objects.all()
         return queryset
