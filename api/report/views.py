@@ -14,10 +14,21 @@ class RebuildReportPageListView(ListCreateAPIView):
     def get_queryset(self):
         pageReportsRebuildIdFilter = self.request.GET.get('pageReportsRebuildIdFilter')
         pageReportsJobNoFilter = self.request.GET.get('pageReportsJobNoFilter')
-        if pageReportsRebuildIdFilter or pageReportsJobNoFilter:
+        pageReportsCustomerFilter = self.request.GET.get('pageReportsCustomerFilter')
+        pageReportVehicleFilter = self.request.GET.get('pageReportVehicleFilter')
+
+
+        if pageReportsRebuildIdFilter or pageReportsJobNoFilter or pageReportsCustomerFilter or pageReportVehicleFilter:            
+           
             queryset = RebuildReport.objects\
                         .filter(rebuild_id__rebuild_id__istartswith=pageReportsRebuildIdFilter)\
                         .filter(job_no__istartswith=pageReportsJobNoFilter)
+            
+            if pageReportsCustomerFilter:
+                queryset = queryset.filter(customer__id = pageReportsCustomerFilter)
+
+            if pageReportVehicleFilter:
+                queryset = queryset.filter(vehicle__vehical_no = pageReportVehicleFilter)                   
         else:
             queryset = RebuildReport.objects.all()
         return queryset

@@ -8,8 +8,14 @@ from .serializers import CustomerSerializer, VehicleSerializer
 from api.paginations import DefaultPagination
 
 class CustomerAllList(ListCreateAPIView):
-    queryset = Customer.objects.order_by('name').all()
     serializer_class = CustomerSerializer
+
+    def get_queryset(self):
+        allCustomerNameFilter = self.request.GET.get('allCustomerNameFilter')
+
+        if allCustomerNameFilter:
+            return Customer.objects.filter(name__istartswith = allCustomerNameFilter)
+        return Customer.objects.order_by('name').all()
 
 class CustomerList(ListCreateAPIView):
     queryset = Customer.objects.all()
@@ -32,8 +38,14 @@ class CustomerDetail(RetrieveUpdateDestroyAPIView):
 
     
 class VehicleList(ListCreateAPIView):
-    queryset = Vehical.objects.all()
+    
     serializer_class = VehicleSerializer
+
+    def get_queryset(self):
+        vehicleNoFilter = self.request.GET.get('vehicleNoFilter')
+        if vehicleNoFilter:
+            return Vehical.objects.filter(vehical_no__istartswith=vehicleNoFilter)
+        return Vehical.objects.all()
     
     
 class VehicleDetails(RetrieveUpdateDestroyAPIView):
