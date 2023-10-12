@@ -35,6 +35,7 @@ class StockItem(models.Model):
     qty = models.PositiveSmallIntegerField()
     customer_unit_price = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
     max_qty = models.PositiveIntegerField()
+    date = models.DateTimeField(auto_now_add=True)
 
 PAYMENT_SELECT = 'select'
 PAYMENT_CASH = 'cash'
