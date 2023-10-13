@@ -5,8 +5,29 @@ from rest_framework.response import Response
 from stock_data.models import StockItem, StockItemsInvoice, StockItemUnique, StockPayment
 from billing_data.models import BillItems
 from api.paginations import DefaultPagination
+import datetime
 from .serializers import StockItemDefaultSerializer, StockItemsInvoiceSerilizer, StockItemUniqueSerializer, StockPaymentSerializer
 
+class ConvertDateToDateTime:
+    def __init__(self, date_start=None, date_end=None):
+        self.date_start = date_start
+        self.date_end = date_end
+
+        if self.date_end and self.date_start:
+            date_object_start = datetime.datetime.strptime(self.date_start, "%Y-%m-%d").date()
+            date_object_end = datetime.datetime.strptime(self.date_end, "%Y-%m-%d").date()
+            self.today_min = datetime.datetime.combine(date_object_start, datetime.time.min)
+            self.today_max = datetime.datetime.combine(date_object_end, datetime.time.max)
+        elif self.date_start:
+            date_object = datetime.datetime.strptime(self.date_start, "%Y-%m-%d").date()
+            self.today_min = datetime.datetime.combine(date_object, datetime.time.min)
+            self.today_max = datetime.datetime.combine(date_object, datetime.time.max)
+
+    def converted_min(self):
+        return self.today_min
+    
+    def converted_max(self):
+        return self.today_max
 
 class StockItemUniqueList(ListCreateAPIView):
     queryset = StockItemUnique.objects.all()
@@ -28,8 +49,6 @@ class StockPageItemList(ListAPIView):
         pageStockItemsStartDateFilter = self.request.GET.get('pageStockItemsStartDateFilter')
         pageStockItemsEndDateFilter = self.request.GET.get('pageStockItemsEndDateFilter')
 
-        print('pageStockItemsInvoiceNoFilter', pageStockItemsInvoiceNoFilter)
-
         if pageStockItemsInvoiceNoFilter or pageStockItemsItemIdFilter or pageStockItemsBrandFilter or pageStockItemsSizeFilter or pageStockItemsStartDateFilter or pageStockItemsEndDateFilter:
             queryset = StockItem.objects.all()
             if pageStockItemsInvoiceNoFilter:
@@ -40,6 +59,9 @@ class StockPageItemList(ListAPIView):
                 queryset = queryset.filter(item__brand__istartswith=pageStockItemsBrandFilter)
             if pageStockItemsSizeFilter:
                 queryset = queryset.filter(item__size__istartswith=pageStockItemsSizeFilter)
+            if pageStockItemsStartDateFilter or pageStockItemsEndDateFilter:
+                date_object = ConvertDateToDateTime(pageStockItemsStartDateFilter, pageStockItemsEndDateFilter)
+                queryset = queryset.filter(date__range = (date_object.converted_min(), date_object.converted_max()))                
         else:
             queryset = StockItem.objects.all()
         return queryset
