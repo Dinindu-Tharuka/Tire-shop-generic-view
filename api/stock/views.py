@@ -15,7 +15,34 @@ class StockItemUniqueList(ListCreateAPIView):
 class StockItemList(ListAPIView):
     queryset = StockItem.objects.all()
     serializer_class = StockItemDefaultSerializer
+    
+class StockPageItemList(ListAPIView):    
+    serializer_class = StockItemDefaultSerializer
+    pagination_class = DefaultPagination
 
+    def get_queryset(self):
+        pageStockItemsInvoiceNoFilter = self.request.GET.get('pageStockItemsInvoiceNoFilter')
+        pageStockItemsItemIdFilter = self.request.GET.get('pageStockItemsItemIdFilter')
+        pageStockItemsBrandFilter = self.request.GET.get('pageStockItemsBrandFilter')
+        pageStockItemsSizeFilter = self.request.GET.get('pageStockItemsSizeFilter')
+        pageStockItemsStartDateFilter = self.request.GET.get('pageStockItemsStartDateFilter')
+        pageStockItemsEndDateFilter = self.request.GET.get('pageStockItemsEndDateFilter')
+
+        print('pageStockItemsInvoiceNoFilter', pageStockItemsInvoiceNoFilter)
+
+        if pageStockItemsInvoiceNoFilter or pageStockItemsItemIdFilter or pageStockItemsBrandFilter or pageStockItemsSizeFilter or pageStockItemsStartDateFilter or pageStockItemsEndDateFilter:
+            queryset = StockItem.objects.all()
+            if pageStockItemsInvoiceNoFilter:
+                queryset = queryset.filter(stock_invoice__invoice_no__istartswith = pageStockItemsInvoiceNoFilter)
+            if pageStockItemsItemIdFilter:
+                queryset = queryset.filter(item__item_id__istartswith=pageStockItemsItemIdFilter)
+            if pageStockItemsBrandFilter:
+                queryset = queryset.filter(item__brand__istartswith=pageStockItemsBrandFilter)
+            if pageStockItemsSizeFilter:
+                queryset = queryset.filter(item__size__istartswith=pageStockItemsSizeFilter)
+        else:
+            queryset = StockItem.objects.all()
+        return queryset
 
 class StockItemDetail(RetrieveUpdateDestroyAPIView):
     queryset = StockItem.objects.all()
