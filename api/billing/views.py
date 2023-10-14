@@ -12,28 +12,37 @@ from .serializers import PaymentCashSerializer, PaymentChequeSerializer, Payment
 from .serializers import DagInvoicePaymentSerializer
 import datetime
 
+
 class ConvertDateToDateTime:
     def __init__(self, date_start=None, date_end=None):
         self.date_start = date_start
         self.date_end = date_end
 
         if self.date_end and self.date_start:
-            date_object_start = datetime.datetime.strptime(self.date_start, "%Y-%m-%d").date()
-            date_object_end = datetime.datetime.strptime(self.date_end, "%Y-%m-%d").date()
-            self.today_min = datetime.datetime.combine(date_object_start, datetime.time.min)
-            self.today_max = datetime.datetime.combine(date_object_end, datetime.time.max)
+            date_object_start = datetime.datetime.strptime(
+                self.date_start, "%Y-%m-%d").date()
+            date_object_end = datetime.datetime.strptime(
+                self.date_end, "%Y-%m-%d").date()
+            self.today_min = datetime.datetime.combine(
+                date_object_start, datetime.time.min)
+            self.today_max = datetime.datetime.combine(
+                date_object_end, datetime.time.max)
         elif self.date_start:
-            date_object = datetime.datetime.strptime(self.date_start, "%Y-%m-%d").date()
-            self.today_min = datetime.datetime.combine(date_object, datetime.time.min)
-            self.today_max = datetime.datetime.combine(date_object, datetime.time.max)
+            date_object = datetime.datetime.strptime(
+                self.date_start, "%Y-%m-%d").date()
+            self.today_min = datetime.datetime.combine(
+                date_object, datetime.time.min)
+            self.today_max = datetime.datetime.combine(
+                date_object, datetime.time.max)
 
     def converted_min(self):
         return self.today_min
-    
+
     def converted_max(self):
         return self.today_max
 
-class BillListView(ListCreateAPIView):
+
+class BillPageListView(ListCreateAPIView):
     serializer_class = BillSerializer
     pagination_class = DefaultPagination
 
@@ -42,10 +51,11 @@ class BillListView(ListCreateAPIView):
         queryCustomer = self.request.GET.get('billFilterCustomer')
         billVehicleFilter = self.request.GET.get('billVehicleFilter')
         billStartDateFilter = self.request.GET.get('billStartDateFilter')
-        billEndDateFilter = self.request.GET.get('billEndDateFilter')       
-        
+        billEndDateFilter = self.request.GET.get('billEndDateFilter')
+
         if billIdFilter or queryCustomer or billVehicleFilter or billStartDateFilter or billEndDateFilter:
-            converted_date = ConvertDateToDateTime(billStartDateFilter, billEndDateFilter)
+            converted_date = ConvertDateToDateTime(
+                billStartDateFilter, billEndDateFilter)
             queryset = Bill.objects \
                 .prefetch_related('bill_items') \
                 .prefetch_related('bill_services') \
@@ -58,11 +68,14 @@ class BillListView(ListCreateAPIView):
             if billIdFilter:
                 queryset = queryset.filter(invoice_id__startswith=billIdFilter)
             if queryCustomer:
-                queryset = queryset.filter(customer__name__startswith=queryCustomer)
+                queryset = queryset.filter(
+                    customer__name__startswith=queryCustomer)
             if billVehicleFilter:
-                queryset = queryset.filter(vehicle__vehical_no__startswith=billVehicleFilter)
-            if billStartDateFilter or billEndDateFilter:                
-                queryset = queryset.filter(date__range = (converted_date.converted_min(), converted_date.converted_max()))
+                queryset = queryset.filter(
+                    vehicle__vehical_no__startswith=billVehicleFilter)
+            if billStartDateFilter or billEndDateFilter:
+                queryset = queryset.filter(date__range=(
+                    converted_date.converted_min(), converted_date.converted_max()))
         else:
             queryset = Bill.objects \
                 .prefetch_related('bill_items') \
@@ -75,6 +88,50 @@ class BillListView(ListCreateAPIView):
                 .order_by('-date').all()
         return queryset
 
+class AllBillListView(ListCreateAPIView):
+    serializer_class = BillSerializer
+    
+    def get_queryset(self):
+        allbillIdFilter = self.request.GET.get('allbillIdFilter')
+        allbillFilterCustomer = self.request.GET.get('allbillFilterCustomer')
+        allbillVehicleFilter = self.request.GET.get('allbillVehicleFilter')
+        allbillStartDateFilter = self.request.GET.get('allbillStartDateFilter')
+        allbillEndDateFilter = self.request.GET.get('allbillEndDateFilter')
+
+        if allbillIdFilter or allbillFilterCustomer or allbillVehicleFilter or allbillStartDateFilter or allbillEndDateFilter:
+            converted_date = ConvertDateToDateTime(
+                allbillStartDateFilter, allbillEndDateFilter)
+            queryset = Bill.objects \
+                .prefetch_related('bill_items') \
+                .prefetch_related('bill_services') \
+                .prefetch_related('bill_payments') \
+                .prefetch_related('bill_payments__payments_cash') \
+                .prefetch_related('bill_payments__payment_cheques') \
+                .prefetch_related('bill_payments__payments_credit_card') \
+                .prefetch_related('bill_payments__payments_credit') \
+                .order_by('-date').all()
+            if allbillIdFilter:
+                queryset = queryset.filter(invoice_id__startswith=allbillIdFilter)
+            if allbillFilterCustomer:
+                queryset = queryset.filter(
+                    customer__name__startswith=allbillFilterCustomer)
+            if allbillVehicleFilter:
+                queryset = queryset.filter(
+                    vehicle__vehical_no__startswith=allbillVehicleFilter)
+            if allbillStartDateFilter or allbillEndDateFilter:
+                queryset = queryset.filter(date__range=(
+                    converted_date.converted_min(), converted_date.converted_max()))
+        else:
+            queryset = Bill.objects \
+                .prefetch_related('bill_items') \
+                .prefetch_related('bill_services') \
+                .prefetch_related('bill_payments') \
+                .prefetch_related('bill_payments__payments_cash') \
+                .prefetch_related('bill_payments__payment_cheques') \
+                .prefetch_related('bill_payments__payments_credit_card') \
+                .prefetch_related('bill_payments__payments_credit') \
+                .order_by('-date').all()
+        return queryset
 
 class BillDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Bill.objects \
@@ -126,7 +183,7 @@ class BillItemsListView(ListCreateAPIView):
 
 class BillItemsDetailView(RetrieveUpdateDestroyAPIView):
     queryset = BillItems.objects.all()
-    serializer_class = BillItemsSerializer    
+    serializer_class = BillItemsSerializer
 
 
 class BillServisesListView(ListCreateAPIView):
