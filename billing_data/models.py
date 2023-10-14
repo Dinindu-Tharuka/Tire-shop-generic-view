@@ -1,5 +1,5 @@
 from django.db import models
-from customer_data.models import Customer
+from customer_data.models import Customer, Vehical
 from inventory_data.models import Item
 from services_data.models import Service, Employee
 from stock_data.models import StockItem, StockItemUnique
@@ -9,8 +9,8 @@ from dag_section_data.models import ReceivedSupplierTyre
 class Bill(models.Model):
     invoice_id = models.CharField(max_length=50, primary_key=True)
     customer = models.ForeignKey(
-        Customer, on_delete=models.PROTECT, related_name='bills')
-
+        Customer, on_delete=models.PROTECT)
+    vehicle = models.ForeignKey(Vehical, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     discount_amount = models.DecimalField(
         max_digits=8, decimal_places=2, null=True, blank=True)

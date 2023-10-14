@@ -14,7 +14,7 @@ class CustomerAllList(ListCreateAPIView):
         allCustomerNameFilter = self.request.GET.get('allCustomerNameFilter')
 
         if allCustomerNameFilter:
-            return Customer.objects.filter(name__istartswith = allCustomerNameFilter)
+            return Customer.objects.filter(name__startswith = allCustomerNameFilter)
         return Customer.objects.order_by('name').all()
 
 class CustomerList(ListCreateAPIView):

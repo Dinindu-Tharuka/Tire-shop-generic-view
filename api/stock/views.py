@@ -36,6 +36,32 @@ class StockItemUniqueList(ListCreateAPIView):
 class StockItemList(ListAPIView):
     queryset = StockItem.objects.all()
     serializer_class = StockItemDefaultSerializer
+
+    def get_queryset(self):
+        stockItemsInvoiceNoFilter = self.request.GET.get('stockItemsInvoiceNoFilter')
+        stockItemsItemIdFilter = self.request.GET.get('stockItemsItemIdFilter')
+        stockItemsBrandFilter = self.request.GET.get('stockItemsBrandFilter')
+        stockItemsSizeFilter = self.request.GET.get('stockItemsSizeFilter')
+        stockItemsStartDateFilter = self.request.GET.get('stockItemsStartDateFilter')
+        stockItemsEndDateFilter = self.request.GET.get('stockItemsEndDateFilter')
+
+        if stockItemsInvoiceNoFilter or stockItemsItemIdFilter or stockItemsBrandFilter or stockItemsSizeFilter or stockItemsStartDateFilter or stockItemsEndDateFilter:
+            queryset = StockItem.objects.all()
+            if stockItemsInvoiceNoFilter:
+                queryset = queryset.filter(stock_invoice__invoice_no__istartswith = stockItemsInvoiceNoFilter)
+            if stockItemsItemIdFilter:
+                queryset = queryset.filter(item__item_id__istartswith=stockItemsItemIdFilter)
+            if stockItemsBrandFilter:
+                queryset = queryset.filter(item__brand__istartswith=stockItemsBrandFilter)
+            if stockItemsSizeFilter:
+                queryset = queryset.filter(item__size__istartswith=stockItemsSizeFilter)
+            if stockItemsStartDateFilter or stockItemsEndDateFilter:
+                date_object = ConvertDateToDateTime(stockItemsStartDateFilter, stockItemsEndDateFilter)
+                queryset = queryset.filter(date__range = (date_object.converted_min(), date_object.converted_max()))                
+        else:
+            queryset = StockItem.objects.all()
+        return queryset
+        
     
 class StockPageItemList(ListAPIView):    
     serializer_class = StockItemDefaultSerializer

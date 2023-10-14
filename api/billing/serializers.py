@@ -91,7 +91,7 @@ class BillSerializer(serializers.ModelSerializer):
     dag_payments = DagInvoicePaymentSerializer(many=True)
     class Meta:
         model = Bill
-        fields = ['invoice_id', 'customer', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services', 'dag_payments']
+        fields = ['invoice_id', 'customer', 'vehicle', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services', 'dag_payments']
 
     
 

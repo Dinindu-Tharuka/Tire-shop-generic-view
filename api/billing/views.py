@@ -17,11 +17,13 @@ class BillListView(ListCreateAPIView):
     pagination_class = DefaultPagination
 
     def get_queryset(self):
-        query = self.request.GET.get('billIdFilter')
+        billIdFilter = self.request.GET.get('billIdFilter')
         queryCustomer = self.request.GET.get('billFilterCustomer')
-        print(query)
-        print(queryCustomer)
-        if query or queryCustomer:
+        billVehicleFilter = self.request.GET.get('billVehicleFilter')
+        billStartDateFilter = self.request.GET.get('billStartDateFilter')
+        billEndDateFilter = self.request.GET.get('billEndDateFilter')
+        
+        if billIdFilter or queryCustomer or billVehicleFilter or billStartDateFilter or billEndDateFilter:
             queryset = Bill.objects \
                 .prefetch_related('bill_items') \
                 .prefetch_related('bill_services') \
@@ -30,7 +32,12 @@ class BillListView(ListCreateAPIView):
                 .prefetch_related('bill_payments__payment_cheques') \
                 .prefetch_related('bill_payments__payments_credit_card') \
                 .prefetch_related('bill_payments__payments_credit') \
-                .order_by('-date').filter(invoice_id__startswith=query).filter(customer__startswith=queryCustomer).all()
+                .order_by('-date').all()
+            if billIdFilter:
+                queryset = queryset.filter(invoice_id__startswith=billIdFilter)
+            if queryCustomer:
+                queryset = queryset.filter(customer__name__startswith=queryCustomer)
+           
         else:
             queryset = Bill.objects \
                 .prefetch_related('bill_items') \
@@ -94,12 +101,7 @@ class BillItemsListView(ListCreateAPIView):
 
 class BillItemsDetailView(RetrieveUpdateDestroyAPIView):
     queryset = BillItems.objects.all()
-    serializer_class = BillItemsSerializer
-
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
-        print('items', instance)
-        return super().delete(request, *args, **kwargs)
+    serializer_class = BillItemsSerializer    
 
 
 class BillServisesListView(ListCreateAPIView):
