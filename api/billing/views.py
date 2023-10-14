@@ -10,7 +10,28 @@ from billing_data.models import DagInvoicePayment
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
 from .serializers import PaymentCashSerializer, PaymentChequeSerializer, PaymentCreditCardSerializer, PaymentCreditSerializer
 from .serializers import DagInvoicePaymentSerializer
+import datetime
 
+class ConvertDateToDateTime:
+    def __init__(self, date_start=None, date_end=None):
+        self.date_start = date_start
+        self.date_end = date_end
+
+        if self.date_end and self.date_start:
+            date_object_start = datetime.datetime.strptime(self.date_start, "%Y-%m-%d").date()
+            date_object_end = datetime.datetime.strptime(self.date_end, "%Y-%m-%d").date()
+            self.today_min = datetime.datetime.combine(date_object_start, datetime.time.min)
+            self.today_max = datetime.datetime.combine(date_object_end, datetime.time.max)
+        elif self.date_start:
+            date_object = datetime.datetime.strptime(self.date_start, "%Y-%m-%d").date()
+            self.today_min = datetime.datetime.combine(date_object, datetime.time.min)
+            self.today_max = datetime.datetime.combine(date_object, datetime.time.max)
+
+    def converted_min(self):
+        return self.today_min
+    
+    def converted_max(self):
+        return self.today_max
 
 class BillListView(ListCreateAPIView):
     serializer_class = BillSerializer
@@ -21,11 +42,10 @@ class BillListView(ListCreateAPIView):
         queryCustomer = self.request.GET.get('billFilterCustomer')
         billVehicleFilter = self.request.GET.get('billVehicleFilter')
         billStartDateFilter = self.request.GET.get('billStartDateFilter')
-        billEndDateFilter = self.request.GET.get('billEndDateFilter')
-
-        
+        billEndDateFilter = self.request.GET.get('billEndDateFilter')       
         
         if billIdFilter or queryCustomer or billVehicleFilter or billStartDateFilter or billEndDateFilter:
+            converted_date = ConvertDateToDateTime(billStartDateFilter, billEndDateFilter)
             queryset = Bill.objects \
                 .prefetch_related('bill_items') \
                 .prefetch_related('bill_services') \
@@ -41,7 +61,8 @@ class BillListView(ListCreateAPIView):
                 queryset = queryset.filter(customer__name__startswith=queryCustomer)
             if billVehicleFilter:
                 queryset = queryset.filter(vehicle__vehical_no__startswith=billVehicleFilter)
-           
+            if billStartDateFilter or billEndDateFilter:                
+                queryset = queryset.filter(date__range = (converted_date.converted_min(), converted_date.converted_max()))
         else:
             queryset = Bill.objects \
                 .prefetch_related('bill_items') \
