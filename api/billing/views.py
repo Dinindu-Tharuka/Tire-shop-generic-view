@@ -22,6 +22,8 @@ class BillListView(ListCreateAPIView):
         billVehicleFilter = self.request.GET.get('billVehicleFilter')
         billStartDateFilter = self.request.GET.get('billStartDateFilter')
         billEndDateFilter = self.request.GET.get('billEndDateFilter')
+
+        
         
         if billIdFilter or queryCustomer or billVehicleFilter or billStartDateFilter or billEndDateFilter:
             queryset = Bill.objects \
@@ -37,6 +39,8 @@ class BillListView(ListCreateAPIView):
                 queryset = queryset.filter(invoice_id__startswith=billIdFilter)
             if queryCustomer:
                 queryset = queryset.filter(customer__name__startswith=queryCustomer)
+            if billVehicleFilter:
+                queryset = queryset.filter(vehicle__vehical_no__startswith=billVehicleFilter)
            
         else:
             queryset = Bill.objects \
