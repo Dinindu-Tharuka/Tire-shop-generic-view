@@ -14,6 +14,7 @@ urlpatterns = [
     path('payments-cash/', views.PaymentCashListView.as_view()),
     path('payments-cash/<int:pk>/', views.PaymentCashDetailView.as_view()),
     path('payments-cheque/', views.PaymentChequeListView.as_view()),
+    path('payments-page-cheque/', views.PaymentChequePageListView.as_view()),
     path('payments-cheque/<int:pk>/', views.PaymentChequeDetailView.as_view()),
     path('payments-credit-card/', views.PaymentCreditCardListView.as_view()),
     path('payments-credit-card/<int:pk>/',

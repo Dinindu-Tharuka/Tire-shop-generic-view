@@ -220,6 +220,22 @@ class PaymentChequeListView(ListCreateAPIView):
     queryset = PaymentCheque.objects.all()
     serializer_class = PaymentChequeSerializer
 
+class PaymentChequePageListView(ListCreateAPIView):
+    
+    serializer_class = PaymentChequeSerializer
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+        pagePaymentChequesStartDateFilter = self.request.GET.get('pagePaymentChequesStartDateFilter')
+        pagePaymentChequesEndDateFilter = self.request.GET.get('pagePaymentChequesEndDateFilter')
+        queryset = PaymentCheque.objects.all()
+
+        if pagePaymentChequesEndDateFilter or pagePaymentChequesEndDateFilter:
+            convert_to_date = ConvertDateToDateTime(pagePaymentChequesStartDateFilter, pagePaymentChequesEndDateFilter)
+            queryset = queryset.filter(cheque_date__range = (convert_to_date.converted_min(), convert_to_date.converted_min()))
+
+        return queryset
+
 
 class PaymentChequeDetailView(RetrieveUpdateDestroyAPIView):
     queryset = PaymentCheque.objects.all()

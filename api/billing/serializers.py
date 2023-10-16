@@ -27,10 +27,10 @@ class PaymentCashSerializer(serializers.ModelSerializer):
         fields =  ['id', 'bill_payment', 'date', 'payeename', 'amount']
 
 class PaymentChequeSerializer(serializers.ModelSerializer):
-    bill_payment = serializers.CharField(read_only=True)
+    bill_payment_id = serializers.CharField(read_only=True)
     class Meta:
         model = PaymentCheque
-        fields = ['id', 'bill_payment', 'date', 'amount', 'cheque_no', 'payeename', 'bank', 'branch', 'cheque_date']
+        fields = ['id', 'bill_payment_id', 'date', 'amount', 'cheque_no', 'payeename', 'bank', 'branch', 'cheque_date']
 
 class PaymentCreditCardSerializer(serializers.ModelSerializer):
     bill_payment = serializers.CharField(read_only=True)
