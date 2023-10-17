@@ -27,10 +27,11 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     objects = UserAccountManager()
     
     USERNAME_FIELD = 'user_name'
-    REQUIRED_FIELDS = ['email', 'is_manager']
+    REQUIRED_FIELDS = ['email', 'is_manager', 'is_superuser']
 
 class UserProfile(models.Model):
     user_account = models.OneToOneField(UserAccount, on_delete=models.CASCADE, related_name='profile')
