@@ -5,7 +5,7 @@ from inventory_data.models import Supplier
 # Take part
 class TakenTyre(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    vehicle = models.ForeignKey(Vehical,on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(Vehical, on_delete=models.CASCADE)
     taken_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

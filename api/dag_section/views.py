@@ -7,10 +7,12 @@ from .serializers import TakenTyreUpdateSerializer, TakenTyreCreateSerializer, C
 from .serializers import SendTyreCreateSerializer, SendTyreUpdateSerializer, SendSupplierTyreSerializer
 from .serializers import ReceivedTyreSerializer, ReceivedTyreUpdateSerializer, ReceivedSupplierTyreSerializer
 from api.paginations import DefaultPagination
+from report_data.models import RebuildReport
 
 
 class CustomerTakenTyresList(ListCreateAPIView):
-    queryset = CustomerTakenTyre.objects.order_by('-tyre_taken__taken_date').all()
+    queryset = CustomerTakenTyre.objects.order_by(
+        '-tyre_taken__taken_date').all()
     serializer_class = CustomerTakenTyreSerializer
 
 
@@ -27,6 +29,21 @@ class TyreTakenDetailView(RetrieveUpdateDestroyAPIView):
         if self.request.method == 'POST':
             return TakenTyreCreateSerializer
         return TakenTyreUpdateSerializer
+
+    def delete(self, request, *args, **kwargs):
+        taken_tyre_instance = self.get_object()
+
+        for customer_tyre in taken_tyre_instance.customer_tyres.all():
+            rebuild_id = customer_tyre.rebuild_id
+            try:
+                rebuild_report = RebuildReport.objects.get(
+                    rebuild_id=rebuild_id)
+                rebuild_report.delete()
+                print('entry deleted')
+            except:
+                print('there is no entry of report.')
+
+        return super().delete(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -45,10 +62,22 @@ class TyreTakenDetailView(RetrieveUpdateDestroyAPIView):
             try:
                 CustomerTakenTyre.objects.get(rebuild_id=tyre['rebuild_id'])
             except:
-                CustomerTakenTyre.objects.create(**tyre, tyre_taken=instance)
+                customer_taken_tyre = CustomerTakenTyre.objects.create(
+                    **tyre, tyre_taken=instance)
+                                
+                # Report
+                RebuildReport.objects.create(
+                    rebuild_id=customer_taken_tyre,
+                    customer_id=instance.customer.id,
+                    vehicle_id=instance.vehicle.vehical_no,
+                    taken_date=instance.taken_date,
+                    tyre_no=customer_taken_tyre.tyre_no,
+                    size=customer_taken_tyre.size,
+                    brand=customer_taken_tyre.brand
+                )  
+                print('updated')             
+
         return super().update(request, *args, **kwargs)
-    
-    
 
 
 class AllSendSupplierTyres(ListCreateAPIView):
@@ -109,9 +138,11 @@ class AllReceivedTyres(ListCreateAPIView):
     queryset = ReceivedTyre.objects.all()
     serializer_class = ReceivedTyreSerializer
 
+
 class AllReceivedSupplierTyres(ListCreateAPIView):
     queryset = ReceivedSupplierTyre.objects.all()
     serializer_class = ReceivedSupplierTyreSerializer
+
 
 class ReceiveTyreListView(ListCreateAPIView):
     queryset = ReceivedTyre.objects.all()
@@ -121,24 +152,25 @@ class ReceiveTyreListView(ListCreateAPIView):
 
 class ReceiveTyreListDetailView(RetrieveUpdateDestroyAPIView):
     queryset = ReceivedTyre.objects.all()
-    
+
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return ReceivedTyreSerializer
         return ReceivedTyreUpdateSerializer
-    
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         received_tyres = request.data.get('received_tyres')
 
         for received_tyre in received_tyres:
-            print('received_tyre', received_tyre)
             try:
-                received = ReceivedSupplierTyre.objects.get(id=received_tyre['id'])
+                received = ReceivedSupplierTyre.objects.get(
+                    id=received_tyre['id'])
             except:
                 send_supplier_tyre_id = received_tyre.pop('send_supplier_tyre')
-                send_supplier_tyre_instance = SendSupplierTyre.objects.get(id=send_supplier_tyre_id)
-                ReceivedSupplierTyre.objects.create( received_tyre=instance, send_supplier_tyre=send_supplier_tyre_instance, **received_tyre)
+                send_supplier_tyre_instance = SendSupplierTyre.objects.get(
+                    id=send_supplier_tyre_id)
+                ReceivedSupplierTyre.objects.create(
+                    received_tyre=instance, send_supplier_tyre=send_supplier_tyre_instance, **received_tyre)
 
         return super().update(request, *args, **kwargs)

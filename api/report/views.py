@@ -39,10 +39,6 @@ class RebuildReportListView(ListCreateAPIView):
         reportVehicleFilter = self.request.GET.get('reportVehicleFilter')
         reportStartDateFilter = self.request.GET.get('reportStartDateFilter')
         reportEndDateFilter = self.request.GET.get('reportEndDateFilter')
-
-        
-
-        print('reportStartDateFilter', reportStartDateFilter)
         
         if reportsRebuildIdFilter or reportsJobNoFilter or reportsCustomerFilter or reportVehicleFilter or reportStartDateFilter or reportEndDateFilter:            
            
