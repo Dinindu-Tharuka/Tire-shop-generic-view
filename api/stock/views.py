@@ -96,6 +96,25 @@ class StockItemDetail(RetrieveUpdateDestroyAPIView):
     queryset = StockItem.objects.all()
     serializer_class = StockItemDefaultSerializer
 
+class AllStockItemsInvoiceList(ListCreateAPIView):    
+    serializer_class = StockItemsInvoiceSerilizer
+
+    def get_queryset(self):
+        filterGrnNo = self.request.GET.get('filterGrnNo')
+        filterInvoiceNo = self.request.GET.get('filterInvoiceNo')
+        filterSupplier = self.request.GET.get('filterSupplier')
+
+        if filterGrnNo or filterInvoiceNo or filterSupplier:
+            queryset = StockItemsInvoice.objects.all()
+            if filterGrnNo:
+                queryset = queryset.filter(invoice_no__startswith=filterGrnNo)
+            if filterInvoiceNo:
+                queryset = queryset.filter(bill_invoice_no__startswith=filterInvoiceNo)
+            if filterSupplier:
+                queryset = queryset.filter(supplier__id = int(filterSupplier))
+        else:
+            queryset = StockItemsInvoice.objects.all()
+        return queryset
 
 class StockItemsInvoiceList(ListCreateAPIView):
     serializer_class = StockItemsInvoiceSerilizer
