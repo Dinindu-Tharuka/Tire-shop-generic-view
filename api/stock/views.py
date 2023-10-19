@@ -103,8 +103,13 @@ class StockItemsInvoiceList(ListCreateAPIView):
 
     def get_queryset(self):
         query= self.request.GET.get('invoiceIdFilter')
-        if query:
-            queryset = StockItemsInvoice.objects.order_by('-date').filter(invoice_no__startswith=query)
+        invoiceBillIdFilter = self.request.GET.get('invoiceBillIdFilter')
+        if query or invoiceBillIdFilter:
+            queryset = StockItemsInvoice.objects.order_by('-date').all()
+            if query:
+                queryset = queryset.filter(invoice_no__startswith=query)
+            if invoiceBillIdFilter:
+                queryset = queryset.filter(bill_invoice_no__startswith=invoiceBillIdFilter)            
         else:
             queryset = StockItemsInvoice.objects.all()
         return queryset
