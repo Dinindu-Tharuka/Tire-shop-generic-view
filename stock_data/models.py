@@ -52,6 +52,16 @@ PAYMENT_METHODS = [
 ]
 
 class StockPayment(models.Model):
-    payment_method = models.CharField(max_length=20)
+    is_cash = models.BooleanField(default=False)
+    is_cheque = models.BooleanField(default=False)
+    is_credit_card = models.BooleanField(default=False)
     amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+    date = models.DateTimeField(auto_now_add=True)
+
+    ## Cheque Detail
+    bank = models.CharField(max_length=50, null=True, blank=True)
+    branch = models.CharField(max_length=50, null=True, blank=True)
+    cheque_date = models.DateField(null=True, blank=True)
+
+    ## Invoice no
     stock_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.PROTECT)
