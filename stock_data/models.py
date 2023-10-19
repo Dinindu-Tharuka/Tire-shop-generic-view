@@ -64,4 +64,4 @@ class StockPayment(models.Model):
     cheque_date = models.DateField(null=True, blank=True)
 
     ## Invoice no
-    stock_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.PROTECT)
+    stock_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.PROTECT, related_name='stock_payments')

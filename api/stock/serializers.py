@@ -53,4 +53,4 @@ class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
 class StockPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model=StockPayment
-        fields=['id', 'payment_method', 'amount', 'stock_invoice']
+        fields=['id', 'is_cash', 'is_cheque', 'is_credit_card', 'amount', 'date', 'bank', 'branch', 'cheque_date', 'stock_invoice']
