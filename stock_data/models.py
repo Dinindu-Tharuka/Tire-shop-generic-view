@@ -14,6 +14,7 @@ class StockItemUnique(models.Model):
 
 class StockItemsInvoice(models.Model):
     invoice_no = models.CharField(max_length=20, primary_key=True)
+    bill_invoice_no = models.CharField(max_length=20)
     date = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
     total_discount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
@@ -39,12 +40,14 @@ class StockItem(models.Model):
 
 PAYMENT_SELECT = 'select'
 PAYMENT_CASH = 'cash'
+PAYMENT_CHEQUE = 'cheque'
 PAYMENT_CREDIT_CARD = 'credit_card'
 
 
 PAYMENT_METHODS = [
     (PAYMENT_SELECT, 'Select'),
     (PAYMENT_CASH, 'Cash'),
+    (PAYMENT_CHEQUE, 'Cheque'),
     (PAYMENT_CREDIT_CARD, 'Credit Card'),
 ]
 

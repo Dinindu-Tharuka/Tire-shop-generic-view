@@ -24,7 +24,7 @@ class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
     
     class Meta:
         model = StockItemsInvoice
-        fields = ['invoice_no', 'date', 'total_amount', 'total_discount', 'supplier', 'stock_items']
+        fields = ['invoice_no', 'bill_invoice_no', 'date', 'total_amount', 'total_discount', 'supplier', 'stock_items']
 
     def create(self, validated_data):
         items = validated_data.pop('stock_items')

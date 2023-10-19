@@ -1,4 +1,3 @@
-
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from dag_section_data.models import TakenTyre, CustomerTakenTyre
 from dag_section_data.models import SendTyre, SendSupplierTyre
