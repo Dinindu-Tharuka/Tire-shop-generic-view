@@ -18,13 +18,19 @@ class StockItemSerializer(serializers.ModelSerializer):
         model = StockItem
         fields = ['id', 'item', 'retail_price', 'cost', 'customer_price', 'supplier_discount', 'sales_discount', 'customer_discount', 'qty']
 
+class StockPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=StockPayment
+        fields=['id', 'is_cash', 'is_cheque', 'is_credit_card', 'amount', 'date', 'bank', 'branch', 'cheque_date', 'stock_invoice']
+
 class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
     stock_items = StockItemSerializer(many=True)
     date = serializers.DateTimeField(read_only=True)
+    stock_payments = StockPaymentSerializer(read_only=True, many=True)
     
     class Meta:
         model = StockItemsInvoice
-        fields = ['invoice_no', 'bill_invoice_no', 'date', 'total_amount', 'total_discount', 'supplier', 'stock_items']
+        fields = ['invoice_no', 'bill_invoice_no', 'date', 'total_amount', 'total_discount', 'supplier', 'stock_items', 'stock_payments']
 
     def create(self, validated_data):
         items = validated_data.pop('stock_items')
@@ -50,7 +56,3 @@ class StockItemsInvoiceSerilizer(serializers.ModelSerializer):
         return invoice
     
     
-class StockPaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=StockPayment
-        fields=['id', 'is_cash', 'is_cheque', 'is_credit_card', 'amount', 'date', 'bank', 'branch', 'cheque_date', 'stock_invoice']
