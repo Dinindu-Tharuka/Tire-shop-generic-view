@@ -14,13 +14,13 @@ class UserProfileSerializer(base_serializer.ModelSerializer):
     user_account_id = base_serializer.IntegerField(read_only=True)
     class Meta:
         model = UserProfile
-        fields = ['id', 'first_name', 'last_name', 'user_account_id']
+        fields = ['id', 'first_name', 'last_name', 'user_account_id', 'telephone', 'address']
 
 class UserProfileCreateSerializer(base_serializer.ModelSerializer):
     user_account_id = base_serializer.IntegerField()
     class Meta:
         model = UserProfile
-        fields = ['id', 'first_name', 'last_name', 'user_account_id']
+        fields = ['id', 'first_name', 'last_name', 'user_account_id', 'telephone', 'address']
 
     
 

@@ -28,9 +28,7 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
 
 class UserProfileListView(ListCreateAPIView):
     queryset = UserProfile.objects.all()
-    serializer_class = UserProfileCreateSerializer
-
-   
+    serializer_class = UserProfileCreateSerializer   
         
 
 class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
