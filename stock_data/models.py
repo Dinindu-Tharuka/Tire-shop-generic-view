@@ -51,6 +51,10 @@ PAYMENT_METHODS = [
     (PAYMENT_CREDIT_CARD, 'Credit Card'),
 ]
 
+class Voucher(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    total_payment = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+
 class StockPayment(models.Model):
     is_cash = models.BooleanField(default=False)
     is_cheque = models.BooleanField(default=False)
@@ -65,3 +69,7 @@ class StockPayment(models.Model):
 
     ## Invoice no
     stock_invoice = models.ForeignKey(StockItemsInvoice, on_delete=models.PROTECT, related_name='stock_payments')
+
+    ## Voucher
+    voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE, null=True, blank=True)
+

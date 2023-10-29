@@ -28,7 +28,7 @@ class UserSerializer(base_serializer.ModelSerializer):
     profile = UserProfileSerializer()
     class Meta:
         model = User
-        fields = ['id', 'user_name', 'email', 'password', 'is_manager', 'profile']
+        fields = ['id', 'user_name', 'email', 'password', 'is_manager', 'profile', 'is_superuser']
 
     def create(self, validated_data):
         profile = validated_data.pop('profile')

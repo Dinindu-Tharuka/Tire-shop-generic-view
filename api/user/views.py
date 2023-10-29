@@ -7,7 +7,6 @@ from .serializers import UserSerializer, UserProfileSerializer, UserProfileCreat
 class UserView(ListCreateAPIView):    
 
     def get_queryset(self):      
-        print('request', self.request.user.is_superuser) 
         if self.request.user.is_superuser:
             queryset = UserAccount.objects.all()
         elif self.request.user.is_manager:
