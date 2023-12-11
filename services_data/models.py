@@ -12,7 +12,7 @@ class Employee(models.Model):
 
 class Service(models.Model):
     description = models.TextField()
-    service_value = models.DecimalField(max_digits=6, decimal_places=2)
+    service_value = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self) -> str:
         return self.description
