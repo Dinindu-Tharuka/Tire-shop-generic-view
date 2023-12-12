@@ -40,7 +40,7 @@ class Item(models.Model):
     vale_type = models.CharField(max_length=20, choices=VALE_CHOICES, default=SELECT)
 
     item_category = models.ForeignKey(ItemCategory, on_delete=models.PROTECT, related_name='items', null=True, blank=True)
-    supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT, related_name='items')
+    supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT, related_name='items', null=True, blank=True)
 
     def __str__(self) -> str:
         return self.item_id

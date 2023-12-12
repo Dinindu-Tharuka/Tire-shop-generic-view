@@ -22,6 +22,10 @@ class ServiceList(ListCreateAPIView):
     queryset = Service.objects.all()
     serializer_class = ServicesSerilizer
     pagination_class = DefaultPagination
+
+class AllServicesList(ListCreateAPIView):
+    queryset = Service.objects.all()
+    serializer_class = ServicesSerilizer
     
     
 class ServiceDetail(RetrieveUpdateDestroyAPIView):

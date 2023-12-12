@@ -73,7 +73,12 @@ class ItemListPagination(ListCreateAPIView):
         query_brand = self.request.GET.get('itemBrandQuery')
 
         if query_item_id or query_size or query_brand:
-            queryset = Item.objects.filter(item_id__istartswith = query_item_id).filter(size__istartswith= query_size).filter(brand__istartswith=query_brand)
+            if query_item_id:
+                queryset = Item.objects.filter(item_id__istartswith = query_item_id)
+            if query_size:
+                queryset = Item.objects.filter(size__istartswith= query_size)
+            if query_brand:
+                queryset = Item.objects.filter(brand__istartswith=query_brand)
         else:
             queryset = Item.objects.all()    
         return queryset

@@ -44,7 +44,7 @@ STATUS = [
 class SendSupplierTyre(models.Model):
     job_no = models.CharField(max_length=50, unique=True)
     send_tyre = models.ForeignKey(SendTyre, on_delete=models.CASCADE, related_name='send_tyres')
-    customer_taken_tyre = models.OneToOneField(CustomerTakenTyre, on_delete=models.CASCADE)
+    customer_taken_tyre = models.OneToOneField(CustomerTakenTyre, on_delete=models.PROTECT)
     status = models.CharField(max_length=10, choices=STATUS, default=SELECT)
 
     def __str__(self) -> str:
@@ -70,4 +70,4 @@ class ReceivedSupplierTyre(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=STATUS_RECEIVED, default=SELECT)
     received_tyre = models.ForeignKey(ReceivedTyre, on_delete=models.CASCADE, related_name='received_tyres')
-    send_supplier_tyre = models.OneToOneField(SendSupplierTyre, on_delete=models.CASCADE)
+    send_supplier_tyre = models.OneToOneField(SendSupplierTyre, on_delete=models.PROTECT)
