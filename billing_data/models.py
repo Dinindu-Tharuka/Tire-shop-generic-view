@@ -9,7 +9,7 @@ from dag_section_data.models import ReceivedSupplierTyre
 class Bill(models.Model):
     invoice_id = models.CharField(max_length=50, primary_key=True)
     customer = models.ForeignKey(
-        Customer, on_delete=models.PROTECT)
+        Customer, on_delete=models.PROTECT, null=True, blank=True)
     vehicle = models.ForeignKey(Vehical, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     discount_amount = models.DecimalField(

@@ -92,7 +92,7 @@ class BillSerializer(serializers.ModelSerializer):
     bill_payments = BillPaymentSerializer(many=True, read_only=True)
     class Meta:
         model = Bill
-        fields = ['invoice_id', 'customer', 'vehicle', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services', 'dag_payments', 'bill_payments']
+        fields = ['invoice_id', 'vehicle', 'date', 'discount_amount', 'sub_total', 'custome_item_value', 'bill_items', 'bill_services', 'dag_payments', 'bill_payments']
 
     
 
