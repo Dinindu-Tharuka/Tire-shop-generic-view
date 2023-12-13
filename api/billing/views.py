@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from billing_data.models import Bill, BillItems, BillServises, BillPayment
 from billing_data.models import PaymentCash, PaymentCheque, PaymentCreditCard, PaymentCredit
-from api.paginations import DefaultPagination
+from api.paginations import DefaultPagination, BillPagination, ChequePagination
 from stock_data.models import StockItem, StockItemUnique
 from billing_data.models import DagInvoicePayment
 from .serializers import BillSerializer, BillItemsSerializer, BillServicesSerilizer, BillPaymentSerializer
@@ -44,7 +44,7 @@ class ConvertDateToDateTime:
 
 class BillPageListView(ListCreateAPIView):
     serializer_class = BillSerializer
-    pagination_class = DefaultPagination
+    pagination_class = BillPagination
 
     def get_queryset(self):
         billIdFilter = self.request.GET.get('billIdFilter')
@@ -232,7 +232,7 @@ class PaymentChequeListView(ListCreateAPIView):
 
 class PaymentChequePageListView(ListCreateAPIView):    
     serializer_class = PaymentChequeSerializer
-    pagination_class = DefaultPagination
+    pagination_class = ChequePagination
 
     def get_queryset(self):
         pagePaymentChequesStartDateFilter = self.request.GET.get('pagePaymentChequesStartDateFilter')
